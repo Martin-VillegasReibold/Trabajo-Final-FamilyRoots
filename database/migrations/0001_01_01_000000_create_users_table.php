@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_image')->nullable(); // imagen de perfil
+            $table->integer('score')->default(0);        // puntaje para el juego
             $table->rememberToken();
             $table->timestamps();
         });
