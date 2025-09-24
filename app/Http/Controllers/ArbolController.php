@@ -1,23 +1,49 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Arbol;
 
+use Inertia\Inertia;
+use App\Models\Arbol;
 use Illuminate\Http\Request;
 
 class ArbolController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $request->validate(['name' => 'required|string|max:255']);
 
         $arbol = Arbol::create([
             'name' => $request->name,
             'user_id' => auth()->id(),
         ]);
 
-        return redirect()->route('crear-arbol')->with('success', 'Árbol creado con éxito');
+        // Para requests de Inertia, usar location redirect
+        //redirecciona a la url y carga todo
+        if ($request->header('X-Inertia')) {
+            return Inertia::location(route('espacio-trabajo', $arbol->id));
+        }
+
+        // Para requests normales
+        return redirect()->route('espacio-trabajo', $arbol->id);
+    }
+
+    public function index()
+    {
+        $arboles = Arbol::where('user_id', auth()->id())->get();
+
+        return Inertia::render('arboles', [
+            'arboles' => $arboles,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $arbol = Arbol::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        return Inertia::render('espacio-trabajo', [
+            'arbol' => $arbol,
+        ]);
     }
 }

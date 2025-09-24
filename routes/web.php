@@ -28,6 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // accion POST para guardar en BD
     Route::post('crear-arbol', [ArbolController::class, 'store'])->name('arbol.store');
+
+    Route::get('/arboles', [ArbolController::class, 'index'])->name('arboles');
+
+    Route::get('/espacio-trabajo/{id}', [ArbolController::class, 'show'])->name('espacio-trabajo');
+
 });
 
 

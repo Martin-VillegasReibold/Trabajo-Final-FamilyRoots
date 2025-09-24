@@ -46,4 +46,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    //relacion usuario arbol
+    public function arboles()
+    {
+        return $this->hasMany(Arbol::class, 'user_id');
+    }
 }

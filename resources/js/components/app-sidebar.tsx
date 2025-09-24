@@ -15,7 +15,8 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
-import { TreePine } from 'lucide-react';
+import { TreePine, Plus  } from 'lucide-react';
+
 
 const mainNavItems: NavItem[] = [
     {
@@ -26,6 +27,11 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Crear Árbol',
         href: '/crear-arbol',
+        icon: Plus,
+    },
+    {
+        title: 'Arboles',
+        href: '/arboles',
         icon: TreePine,
     },
 ];
