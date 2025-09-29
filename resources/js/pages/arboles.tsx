@@ -1,6 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
+import { crearArbol } from '@/routes';
 
 interface Arbol {
     id: number;
@@ -9,7 +10,7 @@ interface Arbol {
 
 interface PageProps {
     arboles: Arbol[];
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default function Arboles() {
@@ -37,7 +38,7 @@ export default function Arboles() {
                 ) : (
                     <div className="text-center p-8 border rounded bg-gray-800">
                         <p className="mb-2">No tenés árboles todavía.</p>
-                        <Link href="/crear-arbol" className="text-sky-600 ">
+                        <Link  href={crearArbol()} className="text-sky-600 ">
                             Crear uno ahora
                         </Link>
                     </div>

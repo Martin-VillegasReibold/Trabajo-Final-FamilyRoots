@@ -9,7 +9,7 @@ interface Arbol {
 
 interface PageProps {
     arbol: Arbol;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default function EspacioTrabajo() {
