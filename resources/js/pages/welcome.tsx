@@ -47,7 +47,7 @@ export default function Welcome() {
                     </nav>
                 </header>
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    HOAL MUNDO
+                    HOLA MUNDO
                 </div>
                 <div className="hidden h-14.5 lg:block"></div>
             </div>
