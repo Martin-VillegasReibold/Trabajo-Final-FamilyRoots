@@ -27,9 +27,21 @@ class ArbolController extends Controller
         return redirect()->route('espacio-trabajo', $arbol->id);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $arboles = Arbol::where('user_id', auth()->id())->get();
+
+        //dump($request->all());
+
+        if ($request->has('search') && !empty($request->input('search'))) {
+            $search = $request->input('search');
+            $arboles = Arbol::where('user_id', auth()->id())
+                ->where('name', 'like', '%' . $search . '%')
+                ->get();
+        } else {
+            $arboles = Arbol::where('user_id', auth()->id())->get();
+        }
+
+        //$arboles = Arbol::where('user_id', auth()->id())->get();
 
         return Inertia::render('arboles', [
             'arboles' => $arboles,
