@@ -173,7 +173,7 @@ export default function Welcome() {
                                                             clearSearch();
                                                         }
                                                     }}
-                                                    placeholder="Buscar por nombre"
+                                                    placeholder="Buscar por nombre de arbol o usuario..."
                                                     aria-label="Buscar árboles por nombre"
                                                     aria-controls="resultados-list"
                                                     className="w-full rounded-l-md border border-gray-300 px-12 py-3 text-base placeholder-gray-500 shadow-sm focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 focus:outline-none"

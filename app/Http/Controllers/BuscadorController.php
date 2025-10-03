@@ -12,9 +12,15 @@ class BuscadorController extends Controller
     public function index(Request $request)
     {
         if ($request->has('search') && !empty($request->input('search'))) {
-            $search = $request->input('search');
+            $search = trim($request->input('search'));
+
             $arboles = Arbol::with('user')
-                ->where('name', 'like', '%' . $search . '%')
+                ->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                          ->orWhereHas('user', function ($q) use ($search) {
+                              $q->where('name', 'like', '%' . $search . '%');
+                          });
+                })
                 ->get();
         } else {
             $arboles = Arbol::with('user')->get();
