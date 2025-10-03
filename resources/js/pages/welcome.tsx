@@ -1,4 +1,5 @@
 import HeaderNavBar2 from '@/components/HeaderNavBar2';
+import Footer2 from '@/components/Footer2';
 import { home } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -22,7 +23,9 @@ interface PageProps {
 export default function Welcome() {
     const { auth, arboles = [] } = usePage<SharedData & PageProps>().props;
 
-    const userCount = Array.from(new Set(arboles.map((a: Arbol) => a.user?.id).filter(Boolean))).length;
+    const userCount = Array.from(
+        new Set(arboles.map((a: Arbol) => a.user?.id).filter(Boolean)),
+    ).length;
 
     // Preserve initial totals so the CTA doesn't change while typing/searching
     const initialTotals = useRef({ arboles: arboles.length, users: userCount });
@@ -77,29 +80,55 @@ export default function Welcome() {
 
                 {/* CTA: incentivar a empezar un árbol y mostrar estadísticas */}
                 <section className="mx-auto w-full max-w-5xl px-4 py-8 md:py-10">
-                    <div className="rounded-lg bg-white dark:bg-gray-800 p-6 md:p-8 shadow-sm">
+                    <div className="rounded-lg bg-white p-6 shadow-sm md:p-8 dark:bg-gray-800">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div>
-                                <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white">Empieza tu árbol familiar</h2>
-                                <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 max-w-2xl">Crea un espacio para tus recuerdos, invita a familiares y construyan juntos la historia de su familia.</p>
+                                <h2 className="text-xl font-extrabold text-gray-900 md:text-2xl dark:text-white">
+                                    Empieza tu árbol familiar
+                                </h2>
+                                <p className="mt-2 max-w-2xl text-sm text-gray-700 dark:text-gray-300">
+                                    Crea un espacio para tus recuerdos, invita a
+                                    familiares y construyan juntos la historia
+                                    de su familia.
+                                </p>
                                 <div className="mt-4 flex flex-wrap gap-3">
-                                    <Link href={auth?.user ? '/crear-arbol' : '/register'} className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm md:text-base font-medium text-white hover:bg-emerald-700">
-                                        {auth?.user ? 'Crear mi árbol' : 'Regístrate y crea tu árbol'}
+                                    <Link
+                                        href={
+                                            auth?.user
+                                                ? '/crear-arbol'
+                                                : '/register'
+                                        }
+                                        className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 md:text-base"
+                                    >
+                                        {auth?.user
+                                            ? 'Crear mi árbol'
+                                            : 'Regístrate y crea tu árbol'}
                                     </Link>
-                                    <Link href={home()} className="inline-flex items-center rounded-md bg-white border px-4 py-2 text-sm md:text-base font-medium text-emerald-800 hover:bg-emerald-50">
+                                    <Link
+                                        href={home()}
+                                        className="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50 md:text-base"
+                                    >
                                         Explorar árboles
                                     </Link>
                                 </div>
                             </div>
 
-                                <div className="mt-4 md:mt-0 flex gap-6">
+                            <div className="mt-4 flex gap-6 md:mt-0">
                                 <div className="flex flex-col items-center px-4 py-2">
-                                    <div className="text-2xl md:text-3xl font-semibold text-emerald-700">{initialTotals.current.arboles}</div>
-                                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-300">Árboles</div>
+                                    <div className="text-2xl font-semibold text-emerald-700 md:text-3xl">
+                                        {initialTotals.current.arboles}
+                                    </div>
+                                    <div className="text-xs text-gray-600 md:text-sm dark:text-gray-300">
+                                        Árboles
+                                    </div>
                                 </div>
                                 <div className="flex flex-col items-center px-4 py-2">
-                                    <div className="text-2xl md:text-3xl font-semibold text-emerald-700">{initialTotals.current.users}</div>
-                                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-300">Usuarios</div>
+                                    <div className="text-2xl font-semibold text-emerald-700 md:text-3xl">
+                                        {initialTotals.current.users}
+                                    </div>
+                                    <div className="text-xs text-gray-600 md:text-sm dark:text-gray-300">
+                                        Usuarios
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -240,6 +269,16 @@ export default function Welcome() {
                                             role="article"
                                             aria-labelledby={`arbol-${a.id}-title`}
                                         >
+                                            {/* Imagen genérica del árbol (encima del nombre) */}
+                                            <div className="mb-4 flex justify-center">
+                                                <img
+                                                    src="/imagenes/logo Arbol.png"
+                                                    alt={`Imagen genérica del árbol ${a.name}`}
+                                                    className="h-60 w-60 rounded-md object-cover"
+                                                    loading="lazy"
+                                                />
+                                            </div>
+
                                             <h2
                                                 id={`arbol-${a.id}-title`}
                                                 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white"
@@ -266,6 +305,7 @@ export default function Welcome() {
                     </div>
                 </div>
                 <div className="hidden h-14.5 lg:block"></div>
+                <Footer2 />
             </div>
         </>
     );

@@ -1,3 +1,4 @@
+import Footer2 from '@/components/Footer2';
 import HeaderNavBar2 from '@/components/HeaderNavBar2';
 import { Head } from '@inertiajs/react';
 
@@ -61,6 +62,7 @@ export default function About() {
                 </div>
 
                 <div className="hidden h-14.5 lg:block"></div>
+                <Footer2 />
             </div>
         </>
     );
