@@ -1,25 +1,31 @@
 import HeaderNavBar2 from '@/components/HeaderNavBar2';
 import { home } from '@/routes';
+import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
 import { useRef, useState } from 'react';
 
+interface Arbol {
+    id: number;
+    name: string;
+    user?: {
+        id?: number;
+        name?: string;
+    } | null;
+}
+
+interface PageProps {
+    arboles: Arbol[];
+    [key: string]: unknown;
+}
+
 export default function Welcome() {
-    const { arboles } = usePage<PageProps>().props;
+    const { auth, arboles = [] } = usePage<SharedData & PageProps>().props;
 
-    interface Arbol {
-        id: number;
-        name: string;
-        user?: {
-            id?: number;
-            name?: string;
-        } | null;
-    }
+    const userCount = Array.from(new Set(arboles.map((a: Arbol) => a.user?.id).filter(Boolean))).length;
 
-    interface PageProps {
-        arboles: Arbol[];
-        [key: string]: unknown;
-    }
+    // Preserve initial totals so the CTA doesn't change while typing/searching
+    const initialTotals = useRef({ arboles: arboles.length, users: userCount });
 
     // Search functionality
     // Usamos 300ms de debounce para no hacer demasiadas requests.
@@ -67,6 +73,38 @@ export default function Welcome() {
                 </a>
 
                 <HeaderNavBar2 />
+                <div className="h-16 md:h-10" aria-hidden="true" />
+
+                {/* CTA: incentivar a empezar un árbol y mostrar estadísticas */}
+                <section className="mx-auto w-full max-w-5xl px-4 py-8 md:py-10">
+                    <div className="rounded-lg bg-white dark:bg-gray-800 p-6 md:p-8 shadow-sm">
+                        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white">Empieza tu árbol familiar</h2>
+                                <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 max-w-2xl">Crea un espacio para tus recuerdos, invita a familiares y construyan juntos la historia de su familia.</p>
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                    <Link href={auth?.user ? '/crear-arbol' : '/register'} className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm md:text-base font-medium text-white hover:bg-emerald-700">
+                                        {auth?.user ? 'Crear mi árbol' : 'Regístrate y crea tu árbol'}
+                                    </Link>
+                                    <Link href={home()} className="inline-flex items-center rounded-md bg-white border px-4 py-2 text-sm md:text-base font-medium text-emerald-800 hover:bg-emerald-50">
+                                        Explorar árboles
+                                    </Link>
+                                </div>
+                            </div>
+
+                                <div className="mt-4 md:mt-0 flex gap-6">
+                                <div className="flex flex-col items-center px-4 py-2">
+                                    <div className="text-2xl md:text-3xl font-semibold text-emerald-700">{initialTotals.current.arboles}</div>
+                                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-300">Árboles</div>
+                                </div>
+                                <div className="flex flex-col items-center px-4 py-2">
+                                    <div className="text-2xl md:text-3xl font-semibold text-emerald-700">{initialTotals.current.users}</div>
+                                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-300">Usuarios</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <div
                     id="main"
                     className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0"
