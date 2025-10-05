@@ -53,7 +53,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="ml-auto text-sm"
+                                            className="ml-auto text-sm text-emerald-600 hover:text-emerald-700"
                                             tabIndex={5}
                                         >
                                             Has olvidado tu contraseña?
@@ -83,7 +83,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -95,9 +95,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
+                        <div className="text-center text-sm text-gray-700 dark:text-gray-300">
                             No tengo una cuenta?{' '}
-                            <TextLink href={register()} tabIndex={5}>
+                            <TextLink href={register()} tabIndex={5} className="text-emerald-600 hover:text-emerald-700">
                                 Registrarse
                             </TextLink>
                         </div>
