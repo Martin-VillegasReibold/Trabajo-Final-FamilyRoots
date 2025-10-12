@@ -31,3 +31,6 @@ Con esta herramienta se facilita la construcción colaborativa de un legado fami
 ### Funcionaliades implementadas en primera entrega(Sprint 1)
 - Registrar usuario
 - Login
+### Funcionaliades implementadas en segunda entrega(Sprint 2)
+- Crear Arbol
+- Comenzar Busqueda
