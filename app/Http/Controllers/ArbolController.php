@@ -54,8 +54,12 @@ class ArbolController extends Controller
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
+        // Obtener los datos del árbol (nodos y enlaces)
+        $treeData = $arbol->getTreeData();
+
         return Inertia::render('espacio-trabajo', [
             'arbol' => $arbol,
+            'initialTreeData' => $treeData,
         ]);
     }
 }

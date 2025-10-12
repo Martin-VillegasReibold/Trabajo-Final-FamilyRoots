@@ -33,9 +33,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/espacio-trabajo/{id}', [ArbolController::class, 'show'])->name('espacio-trabajo');
 
-});
+    // Family Tree API Routes - AUTO-GUARDADO (EN USO)
+    Route::post('/arboles/api/{arbol}/save-data', [\App\Http\Controllers\FamilyTreeController::class, 'saveTreeData'])
+        ->name('arboles.api.save-data');
 
-//Route::get('/welcome', [BuscadorController::class, 'index'])->name('buscador.index');
+    // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
+    // Estas rutas fueron creadas para gestión completa de árboles via API,
+    // pero el frontend actual usa un flujo diferente con ArbolController y rutas web
+    // Route::get('/arboles/api', [\App\Http\Controllers\FamilyTreeController::class, 'index'])->name('arboles.api.index');
+    // Route::post('/arboles/api', [\App\Http\Controllers\FamilyTreeController::class, 'store'])->name('arboles.api.store');
+    // Route::get('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'show'])->name('arboles.api.show');
+    // Route::put('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'update'])->name('arboles.api.update');
+    // Route::delete('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'destroy'])->name('arboles.api.destroy');
+    
+    // Individual Node Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
+    // El sistema actual guarda todos los datos del árbol de una vez via save-data
+    // Route::post('/arboles/api/{arbol}/nodes', [\App\Http\Controllers\FamilyTreeController::class, 'addNode'])
+    //     ->name('arboles.api.add-node');
+    // Route::put('/arboles/api/{arbol}/nodes/{node}', [\App\Http\Controllers\FamilyTreeController::class, 'updateNode'])
+    //     ->name('arboles.api.update-node');
+    // Route::delete('/arboles/api/{arbol}/nodes/{node}', [\App\Http\Controllers\FamilyTreeController::class, 'deleteNode'])
+    //     ->name('arboles.api.delete-node');
+
+});
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
