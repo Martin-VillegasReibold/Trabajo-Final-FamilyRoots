@@ -33,10 +33,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/espacio-trabajo/{id}', [ArbolController::class, 'show'])->name('espacio-trabajo');
 
+    // Editar arbol
+    Route::put('/arboles/{id}', [ArbolController::class, 'update'])->name('arbol.update');
+
+    // Eliminar arbol
+    Route::delete('/arboles/{id}', [ArbolController::class, 'destroy'])->name('arbol.destroy');
+
+
     // Family Tree API Routes - AUTO-GUARDADO (EN USO)
     Route::post('/arboles/api/{arbol}/save-data', [\App\Http\Controllers\FamilyTreeController::class, 'saveTreeData'])
         ->name('arboles.api.save-data');
-
+    
+    // Nueva ruta para obtener datos del arbol (para el Overview)
+    Route::get('/arboles/api/{arbol}/data', [\App\Http\Controllers\FamilyTreeController::class, 'getTreeData'])
+        ->name('arboles.api.data');
+        
     // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // Estas rutas fueron creadas para gestión completa de árboles via API,
     // pero el frontend actual usa un flujo diferente con ArbolController y rutas web
@@ -45,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'show'])->name('arboles.api.show');
     // Route::put('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'update'])->name('arboles.api.update');
     // Route::delete('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'destroy'])->name('arboles.api.destroy');
-    
+
     // Individual Node Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // El sistema actual guarda todos los datos del árbol de una vez via save-data
     // Route::post('/arboles/api/{arbol}/nodes', [\App\Http\Controllers\FamilyTreeController::class, 'addNode'])
@@ -57,5 +68,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

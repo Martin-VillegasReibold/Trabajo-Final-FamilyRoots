@@ -114,7 +114,7 @@ class FamilyTreeController extends Controller
     public function saveTreeData(Request $request, Arbol $arbol)
     {
         $this->checkAuth();
-        
+
         // Verify ownership
         if ($arbol->user_id !== Auth::id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
@@ -163,6 +163,17 @@ class FamilyTreeController extends Controller
             'message' => 'Tree data saved successfully',
             'data' => $arbol->getTreeData()
         ]);
+    }
+
+    public function getTreeData(Arbol $arbol)
+    {
+        $this->checkAuth();
+
+        if ($arbol->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json($arbol->getTreeData());
     }
 
     /**

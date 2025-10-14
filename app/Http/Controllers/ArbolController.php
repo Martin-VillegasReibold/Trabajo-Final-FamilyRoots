@@ -62,4 +62,32 @@ class ArbolController extends Controller
             'initialTreeData' => $treeData,
         ]);
     }
+
+    // Para Editar
+    public function update(Request $request, $id)
+    {
+        $request->validate(['name' => 'required|string|max:255']);
+
+        $arbol = Arbol::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $arbol->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Árbol actualizado correctamente.');
+    }
+
+    // Eliminar
+    public function destroy($id)
+    {
+        $arbol = Arbol::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $arbol->delete();
+
+        return redirect()->route('arboles')->with('success', 'Árbol eliminado correctamente.');
+    }
 }
