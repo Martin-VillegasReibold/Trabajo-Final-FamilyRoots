@@ -25,7 +25,7 @@ export default function ModalEditar({
 
     // Funcion para validar el nombre
     const validarNombre = (texto: string): boolean => {
-        const regex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s\'\-\.\,]*$/;
+        const regex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s'.,-]*$/;
         return regex.test(texto);
     };
 
