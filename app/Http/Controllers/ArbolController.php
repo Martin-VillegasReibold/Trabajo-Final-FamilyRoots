@@ -76,7 +76,7 @@ class ArbolController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->back()->with('success', 'Árbol actualizado correctamente.');
+        return redirect()->route('arboles')->with('success', 'Árbol actualizado correctamente.');
     }
 
     // Eliminar

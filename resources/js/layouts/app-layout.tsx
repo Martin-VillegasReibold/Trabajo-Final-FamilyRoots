@@ -1,7 +1,7 @@
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
-import AppearanceToggleTab from '@/components/appearance-tabs';
+import ThemeToggle from '@/components/theme-toggle';
 
 interface AppLayoutProps {
     children: ReactNode;
@@ -10,7 +10,8 @@ interface AppLayoutProps {
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        <AppearanceToggleTab className="absolute top-3 right-3 md:top-1 md:right-1" /> {/* Para pruebas de modo oscuro/claro */}
+        {/*<AppearanceToggleTab className="absolute top-3 right-3 md:top-1 md:right-1" /> {/* Para pruebas de modo oscuro/claro */}
+        <ThemeToggle className="absolute top-3 right-3 md:top-1 md:right-1" />
         {children}
     </AppLayoutTemplate>
 );

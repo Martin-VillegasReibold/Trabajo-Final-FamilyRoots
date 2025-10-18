@@ -61,7 +61,7 @@ export default function EspacioTrabajo() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Espacio de trabajo - ${arbol.name}`} />
 
-            <div className="p-2">
+            <div className="p-2 dark:bg-gray-800">
                 <FamilyTree2
                     members={familyMembers}
                     onDataChange={handleFamilyDataChange}

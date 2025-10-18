@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-export default function ThemeToggle() {
+interface ThemeToggleProps {
+    className?: string;
+}
+
+export default function ThemeToggle({ className }: ThemeToggleProps) {
     const [isDark, setIsDark] = useState<boolean>(false);
 
     useEffect(() => {
@@ -39,7 +43,7 @@ export default function ThemeToggle() {
             onClick={toggleTheme}
             aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-1 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-1 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-200 ${className || ''}`}
         >
             {isDark ? (
                 // Sun icon for light mode

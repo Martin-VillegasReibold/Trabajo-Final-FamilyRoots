@@ -14,7 +14,7 @@ import { dashboard } from '@/routes';
 import { home } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { Calendar, Users, Home } from 'lucide-react';
 import AppLogo from './app-logo';
 import { TreePine, Plus  } from 'lucide-react';
 
@@ -23,7 +23,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
-        icon: LayoutGrid,
+        icon: Home,
     },
     {
         title: 'Crear Árbol',
@@ -31,9 +31,19 @@ const mainNavItems: NavItem[] = [
         icon: Plus,
     },
     {
-        title: 'Arboles',
+        title: 'Mis Árboles',
         href: '/arboles',
         icon: TreePine,
+    },
+    {
+        title: 'Calendario',
+        href: '/calendario',
+        icon: Calendar,
+    },
+    {
+        title: 'Actividades',
+        href: '/actividades',
+        icon: Users,
     },
 ];
 
@@ -52,11 +62,15 @@ const mainNavItems: NavItem[] = [
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+        <Sidebar collapsible="icon" variant="inset" className="bg-slate-50 dark:bg-gray-900">
+            <SidebarHeader className="bg-white dark:bg-gray-800 shadow-sm">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="min-h-16 px-3" >
+                        <SidebarMenuButton 
+                            size="lg" 
+                            asChild 
+                            className="min-h-16 px-4 hover:bg-emerald-50 hover:text-emerald-800 dark:hover:bg-emerald-900/20 transition-colors duration-200" 
+                        >
                             <Link href={home()} prefetch>
                                 <AppLogo />
                             </Link>
@@ -65,12 +79,16 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
-                <NavMain items={mainNavItems} />
+            <SidebarContent className="px-3 py-4 bg-white dark:bg-gray-800">
+                <div className="mb-4">
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
+                        Navegación
+                    </h3>
+                    <NavMain items={mainNavItems} />
+                </div>
             </SidebarContent>
 
-            <SidebarFooter>
-                {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
+            <SidebarFooter className="bg-white dark:bg-gray-800 p-3">
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

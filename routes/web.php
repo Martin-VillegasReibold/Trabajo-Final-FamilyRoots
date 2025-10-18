@@ -26,6 +26,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('crear-arbol');
 
+    Route::get('calendario', function () {
+        return Inertia::render('calendar');
+    })->name('calendar');
+
+    Route::get('actividades', function () {
+        return Inertia::render('activities');
+    })->name('activities');
+
+
     // accion POST para guardar en BD
     Route::post('crear-arbol', [ArbolController::class, 'store'])->name('arbol.store');
 
