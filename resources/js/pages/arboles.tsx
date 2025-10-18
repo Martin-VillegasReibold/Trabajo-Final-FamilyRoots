@@ -5,7 +5,6 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
 import { useRef, useState } from 'react';
 import BotonAccion from "@/components/ui/BotonAccion";
-import { Inertia } from "@inertiajs/inertia";
 import ModalConfirmacion from '@/components/ModalConfirmacion';
 import ModalEditar from '@/components/ModalEditar';
 import TreeOverview from '@/components/TreeOverview';
@@ -21,12 +20,12 @@ interface PageProps {
 }
 
 export default function Arboles() {
-    const { arboles: arbolesIniciales } = usePage<PageProps>().props;
+    const { arboles } = usePage<PageProps>().props;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedArbolId, setSelectedArbolId] = useState<number | null>(null);
-    const [arboles, setArboles] = useState<Arbol[]>(arbolesIniciales);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingArbol, setEditingArbol] = useState<Arbol | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Árboles', href: '/arboles' },
@@ -41,9 +40,10 @@ export default function Arboles() {
         if (selectedArbolId) {
             router.delete(`/arboles/${selectedArbolId}`, {
                 onSuccess: () => {
-                    setArboles(prev => prev.filter(a => a.id !== selectedArbolId));
                     setIsModalOpen(false);
                     setSelectedArbolId(null);
+                    // Recargar la página para actualizar la lista
+                    router.get('/arboles', {}, { preserveState: false });
                 },
             });
         }
@@ -62,13 +62,8 @@ export default function Arboles() {
                 name: nuevoNombre
             }, {
                 onSuccess: () => {
-                    setArboles(prev =>
-                        prev.map(a =>
-                            a.id === editingArbol.id
-                                ? { ...a, name: nuevoNombre }
-                                : a
-                        )
-                    );
+                    // Recargar la página para actualizar la lista
+                    router.get('/arboles', {}, { preserveState: false });
                 }
             });
         }
@@ -88,6 +83,7 @@ export default function Arboles() {
     // serach method
     function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value;
+        setSearchQuery(query);
         handleSearch(query);
     }
 
@@ -103,6 +99,7 @@ export default function Arboles() {
                         type="text"
                         placeholder="Buscar árbol..."
                         className="mb-4 w-full rounded border p-2"
+                        value={searchQuery}
                         onChange={onSearchChange}
                         id={'search'}
                     />

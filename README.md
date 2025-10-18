@@ -28,9 +28,14 @@ Con esta herramienta se facilita la construcción colaborativa de un legado fami
 
 # Estado de Requerimientos
 
-### Funcionaliades implementadas en primera entrega(Sprint 1)
+### Funcionalidades implementadas en primera entrega(Sprint 1)
 - Registrar usuario
 - Login
-### Funcionaliades implementadas en segunda entrega(Sprint 2)
+### Funcionalidades implementadas en segunda entrega(Sprint 2)
 - Crear Arbol
 - Comenzar Busqueda
+### Funcionalidades implementadas en tercera entrega(Sprint 3)
+- Crear comentario
+- Recordar evento
+- Empezar juego
+- Agregar etiqueta
