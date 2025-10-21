@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ArbolController;
 use App\Models\Arbol;
 use App\Http\Controllers\BuscadorController;
+use App\Http\Controllers\CalendarController;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -25,10 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'arbol' => $arbol,
         ]);
     })->name('crear-arbol');
-
-    Route::get('calendario', function () {
-        return Inertia::render('calendar');
-    })->name('calendar');
 
     Route::get('actividades', function () {
         return Inertia::render('activities');
@@ -56,7 +53,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Nueva ruta para obtener datos del arbol (para el Overview)
     Route::get('/arboles/api/{arbol}/data', [\App\Http\Controllers\FamilyTreeController::class, 'getTreeData'])
         ->name('arboles.api.data');
-        
+
+
+    // CRUD Calendar Routes
+    Route::get('/calendario', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::post('/calendario', [CalendarController::class, 'store'])->name('calendar.store');
+    Route::delete('/calendario/{id}', [CalendarController::class, 'destroy'])->name('calendar.destroy');
+    Route::put('/calendario/{id}', [CalendarController::class, 'update'])->name('calendar.update');
+
     // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // Estas rutas fueron creadas para gestión completa de árboles via API,
     // pero el frontend actual usa un flujo diferente con ArbolController y rutas web

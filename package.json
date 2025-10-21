@@ -25,6 +25,10 @@
     },
     "dependencies": {
         "@balkangraph/familytree.js": "^1.9.46",
+        "@fullcalendar/core": "^6.1.19",
+        "@fullcalendar/daygrid": "^6.1.19",
+        "@fullcalendar/interaction": "^6.1.19",
+        "@fullcalendar/react": "^6.1.19",
         "@headlessui/react": "^2.2.0",
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/react": "^2.2.8",

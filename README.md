@@ -26,6 +26,11 @@ Con esta herramienta se facilita la construcción colaborativa de un legado fami
 - Backend: Laravel
 - Base de datos: MySQL
 
+## Librerias
+
+- [GoJS] (https://gojs.net/latest)
+- [FullCalendar] (https://fullcalendar.io)
+
 # Estado de Requerimientos
 
 ### Funcionalidades implementadas en primera entrega(Sprint 1)

@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Arbol::class, 'user_id');
     }
+
+    //relacion usuario calendario
+    public function calendars()
+    {
+        return $this->hasMany(Calendar::class, 'user_id');
+    }
 }
