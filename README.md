@@ -28,8 +28,8 @@ Con esta herramienta se facilita la construcción colaborativa de un legado fami
 
 ## Librerias
 
-- [GoJS] (https://gojs.net/latest)
-- [FullCalendar] (https://fullcalendar.io)
+- [GoJS](https://gojs.net/latest)
+- [FullCalendar](https://fullcalendar.io)
 
 # Estado de Requerimientos
 
