@@ -20,7 +20,7 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [isSaving, setIsSaving] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const setLoading = useState(true)[1]
 
     // ---------------------------------------------------------- Cargar comentarios ---
     useEffect(() => {

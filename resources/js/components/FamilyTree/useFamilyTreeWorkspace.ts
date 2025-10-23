@@ -172,7 +172,7 @@ export function useFamilyTreeWorkspace(
                 const responseData = await response.json();
                 // Verificamos que la respuesta tenga data.nodes
                 if (responseData.data && Array.isArray(responseData.data.nodes)) {
-                    const updatedNodes = responseData.data.nodes.map((node: any) => ({
+                    const updatedNodes = responseData.data.nodes.map((node: FamilyMember) => ({
                         ...node,
                         id: node.id ?? node.key // aseguramos que todos tengan un id válido
                     }));
