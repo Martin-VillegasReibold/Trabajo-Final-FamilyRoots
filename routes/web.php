@@ -6,6 +6,7 @@ use App\Http\Controllers\ArbolController;
 use App\Models\Arbol;
 use App\Http\Controllers\BuscadorController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CommentController;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -54,6 +55,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/arboles/api/{arbol}/data', [\App\Http\Controllers\FamilyTreeController::class, 'getTreeData'])
         ->name('arboles.api.data');
 
+    // Comentarios
+    Route::get('/nodes/{node}/comments', [CommentController::class, 'index']);
+    Route::post('/nodes/{node}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
 
     // CRUD Calendar Routes
     Route::get('/calendario', [CalendarController::class, 'index'])->name('calendar.index');

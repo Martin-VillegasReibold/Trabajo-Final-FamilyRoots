@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 // Hook encargado de manejar el estado del espacio de trabajo del árbol genealógico, 
 // incluyendo la carga, guardado y manejo de errores.
 interface FamilyMember {
+    id?: number | string;
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';
@@ -56,15 +57,19 @@ export function useFamilyTreeWorkspace(
     const [isDirty, setIsDirty] = useState(false);
     const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
-    // Cargar datos iniciales
     useEffect(() => {
         if (initialData && !initialDataLoaded) {
             if (initialData.nodes && initialData.nodes.length > 0) {
-                setFamilyMembersState(initialData.nodes);
+                setFamilyMembersState(
+                    initialData.nodes.map(node => ({
+                        ...node,
+                        id: node.id ?? node.key,
+                    }))
+                );
             } else {
-                // Datos de ejemplo si no hay datos guardados
                 setFamilyMembersState([
                     {
+                        id: 1,
                         key: 1,
                         name: 'Miembro Principal',
                         gender: 'M',
@@ -162,6 +167,16 @@ export function useFamilyTreeWorkspace(
                     
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+                }
+
+                const responseData = await response.json();
+                // Verificamos que la respuesta tenga data.nodes
+                if (responseData.data && Array.isArray(responseData.data.nodes)) {
+                    const updatedNodes = responseData.data.nodes.map((node: any) => ({
+                        ...node,
+                        id: node.id ?? node.key // aseguramos que todos tengan un id válido
+                    }));
+                    setFamilyMembersState(updatedNodes);
                 }
 
                 setLastSaved(new Date());

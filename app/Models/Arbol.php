@@ -40,6 +40,7 @@ class Arbol extends Model
         return [
             'nodes' => $this->nodes->map(function ($node) {
                 return array_merge([
+                    'id' => $node->id,
                     'key' => $node->node_key,
                     'name' => $node->name,
                     'gender' => $node->gender,
@@ -48,14 +49,14 @@ class Arbol extends Model
                     'img' => $node->img,
                     'position' => $node->position
                 ], $node->node_data ?? []);
-            }),
+            })->values()->toArray(),
             'links' => $this->links->map(function ($link) {
                 return array_merge([
                     'from' => $link->from_node,
                     'to' => $link->to_node,
                     'relationship' => $link->relationship_type
                 ], $link->link_data ?? []);
-            })
+            })->values()->toArray(),
         ];
     }
 }
