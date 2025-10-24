@@ -1,6 +1,7 @@
 import { useState } from 'react';
 // Hook para gestionar los miembros de la familia y sus relaciones en general.
 export interface FamilyMember {
+    id?: number | string; 
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';
@@ -42,14 +43,15 @@ export function useFamilyMemberManagement(
     };
 
     // Add new member function
-    const addNewMember = (
+  const addNewMember = async (
         addRelationType: 'child' | 'parent' | 'spouse',
         setShowAddModal: (show: boolean) => void
     ) => {
         if (!newMember.name.trim() || !selected) return;
 
         const newKey = Date.now();
-        const newMemberData: FamilyMember = {
+        let newMemberData: FamilyMember = {
+            id: undefined, // se completará al guardar en backend
             key: newKey,
             name: newMember.name,
             gender: newMember.gender,
@@ -59,37 +61,36 @@ export function useFamilyMemberManagement(
             parents: []
         };
 
-        let updatedMembers = [...members, newMemberData];
-
-        // Handle relationships based on type
+        // Asignar relaciones iniciales según tipo
         switch (addRelationType) {
             case 'child':
-                if (selected.isMarriageNode) {
-                    // Adding child to a marriage node
-                    newMemberData.parents = selected.spouseKeys || [];
-                } else {
-                    // Adding child to a regular member
-                    newMemberData.parents = [selected.key];
-                }
+                newMemberData.parents = selected.isMarriageNode ? selected.spouseKeys || [] : [selected.key];
                 break;
             case 'spouse':
-                // Add spouse relationship
-                updatedMembers = updatedMembers.map(member => {
-                    if (member.key === selected.key) {
-                        return { ...member, spouses: [...(member.spouses || []), newKey] };
-                    }
-                    return member;
-                });
                 newMemberData.spouses = [selected.key];
                 break;
             case 'parent':
-                // Add parent relationship
-                updatedMembers = updatedMembers.map(member => {
-                    if (member.key === selected.key) {
-                        return { ...member, parents: [...(member.parents || []), newKey] };
-                    }
-                    return member;
-                });
+                break;
+        }
+
+        // Construir array de miembros actualizado localmente
+        let updatedMembers = [...members, newMemberData];
+
+        // Actualizar relaciones de nodo seleccionado si aplica
+        switch (addRelationType) {
+            case 'spouse':
+                updatedMembers = updatedMembers.map(member =>
+                    member.key === selected.key
+                        ? { ...member, spouses: [...(member.spouses || []), newKey] }
+                        : member
+                );
+                break;
+            case 'parent':
+                updatedMembers = updatedMembers.map(member =>
+                    member.key === selected.key
+                        ? { ...member, parents: [...(member.parents || []), newKey] }
+                        : member
+                );
                 break;
         }
 
@@ -97,6 +98,7 @@ export function useFamilyMemberManagement(
         setNewMember({ name: '', gender: 'M', birthYear: undefined, img: '/imagenes/logo Arbol.png' });
         setShowAddModal(false);
     };
+
 
     // Remove member function
     const removeSelectedMember = (setShowDeleteModal: (show: boolean) => void) => {

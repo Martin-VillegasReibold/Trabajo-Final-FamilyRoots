@@ -21,6 +21,7 @@ interface PageProps {
 }
 
 interface FamilyMember {
+    id?: number| string;
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';

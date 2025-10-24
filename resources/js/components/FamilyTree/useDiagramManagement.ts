@@ -28,6 +28,7 @@ export function useDiagramManagement(
         // Add all family members as nodes
         data.forEach((member) => {
             nodeDataArray.push({
+                id: member.id,
                 key: member.key,
                 name: member.name,
                 gender: member.gender || 'Other',

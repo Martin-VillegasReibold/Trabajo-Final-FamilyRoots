@@ -52,4 +52,10 @@ class FamilyTreeNode extends Model
         return $this->hasMany(FamilyTreeLink::class, 'to_node', 'node_key')
                     ->where('arbol_id', $this->arbol_id);
     }
+
+    // obtener los comentarios    
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'node_id');
+    }
 }

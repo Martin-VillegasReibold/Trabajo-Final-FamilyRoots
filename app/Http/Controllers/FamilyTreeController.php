@@ -126,27 +126,33 @@ class FamilyTreeController extends Controller
         ]);
 
         DB::transaction(function () use ($request, $arbol) {
-            // Clear existing data
-            $arbol->nodes()->delete();
-            $arbol->links()->delete();
+            $existingNodeIds = $arbol->nodes()->pluck('id', 'node_key')->toArray();
 
-            // Save nodes
+            $newKeys = collect($request->nodes)->pluck('key')->toArray();
+
+            // 🔹 Eliminar solo los nodos que ya no existen
+            $arbol->nodes()->whereNotIn('node_key', $newKeys)->delete();
+
             foreach ($request->nodes as $nodeData) {
-                FamilyTreeNode::create([
-                    'arbol_id' => $arbol->id,
-                    'node_key' => $nodeData['key'],
-                    'name' => $nodeData['name'],
-                    'gender' => $nodeData['gender'] ?? 'M',
-                    'birth_year' => $nodeData['birthYear'] ?? null,
-                    'death_year' => $nodeData['deathYear'] ?? null,
-                    'img' => $nodeData['img'] ?? null,
-                    'node_data' => $nodeData,
-                    'position' => isset($nodeData['loc']) ? $nodeData['loc'] : null
-                ]);
+                FamilyTreeNode::updateOrCreate(
+                    [
+                        'arbol_id' => $arbol->id,
+                        'node_key' => $nodeData['key'],
+                    ],
+                    [
+                        'name' => $nodeData['name'],
+                        'gender' => $nodeData['gender'] ?? 'M',
+                        'birth_year' => $nodeData['birthYear'] ?? null,
+                        'death_year' => $nodeData['deathYear'] ?? null,
+                        'img' => $nodeData['img'] ?? null,
+                        'node_data' => $nodeData,
+                        'position' => $nodeData['loc'] ?? null,
+                    ]
+                );
             }
 
-            // Save links
             if ($request->has('links') && is_array($request->links)) {
+                $arbol->links()->delete(); 
                 foreach ($request->links as $linkData) {
                     FamilyTreeLink::create([
                         'arbol_id' => $arbol->id,
@@ -175,6 +181,7 @@ class FamilyTreeController extends Controller
 
         return response()->json($arbol->getTreeData());
     }
+
 
     /**
      * Add a single node to the tree.
