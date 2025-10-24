@@ -6,6 +6,7 @@ use App\Http\Controllers\ArbolController;
 use App\Models\Arbol;
 use App\Http\Controllers\BuscadorController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\QuizController;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -27,10 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('crear-arbol');
 
-    Route::get('actividades', function () {
-        return Inertia::render('activities');
-    })->name('activities');
+    Route::get('actividades', [QuizController::class, 'index'])->name('activities');
 
+    // Quiz Routes
+    Route::get('/quiz/generate/{treeId}', [QuizController::class, 'generateQuizForTree'])->name('quiz.generate');
+    Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
 
     // accion POST para guardar en BD
     Route::post('crear-arbol', [ArbolController::class, 'store'])->name('arbol.store');
