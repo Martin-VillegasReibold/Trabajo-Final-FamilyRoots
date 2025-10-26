@@ -12,6 +12,7 @@ export interface FamilyMember {
     parents?: (number | string)[];
     isMarriageNode?: boolean;
     spouseKeys?: (number | string)[];
+    hasIllness?: boolean;
 }
 
 export function useFamilyMemberManagement(

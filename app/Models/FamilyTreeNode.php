@@ -58,4 +58,12 @@ class FamilyTreeNode extends Model
     {
         return $this->hasMany(Comment::class, 'node_id');
     }
+
+    /**
+     * Get all tags associated with this node.
+     */
+    public function tags()
+    {
+        return $this->hasMany(NodeTag::class, 'node_id');
+    }
 }

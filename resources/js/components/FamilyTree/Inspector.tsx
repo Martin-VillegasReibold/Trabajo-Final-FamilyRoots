@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import CommentSection from "@/components/CommentSection";
 import useCommentsStatus from "@/hooks/useCommentStatus";
+import TagSelector from "../TagSelector";
 
 interface FamilyMember {
     id?: number | string;
@@ -26,6 +27,7 @@ interface InspectorProps {
     setSelected: (member: FamilyMember) => void;
     updateSelectedMember: (updates: Partial<FamilyMember>) => void;
     getAllRelationships: (member: FamilyMember) => Array<{ relationship: string; member: FamilyMember }>;
+    refreshAllTags?: () => void;
 }
 
 export default function Inspector({
@@ -36,7 +38,8 @@ export default function Inspector({
     setShowDeleteModal,
     setSelected,
     updateSelectedMember,
-    getAllRelationships
+    getAllRelationships,
+    refreshAllTags 
 }: InspectorProps) {
 
     const [activeTab, setActiveTab] = useState<'panel' | 'comments'>('panel');
@@ -297,6 +300,10 @@ export default function Inspector({
                                                     </div>
                                                 )}
                                             </div>
+
+                                            {/*----------------------------- TagSelector */}
+                                            <TagSelector
+                                                nodeId={selected?.id} refreshAllTags={refreshAllTags}/>
                                         </div>
                                     </div>
                                 </div>

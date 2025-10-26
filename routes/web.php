@@ -8,6 +8,7 @@ use App\Http\Controllers\BuscadorController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NodeTagController;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -68,6 +69,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/calendario', [CalendarController::class, 'store'])->name('calendar.store');
     Route::delete('/calendario/{id}', [CalendarController::class, 'destroy'])->name('calendar.destroy');
     Route::put('/calendario/{id}', [CalendarController::class, 'update'])->name('calendar.update');
+
+    // Etiquetas de nodos 
+    Route::get('/nodes/{node}/tags', [NodeTagController::class, 'index'])->name('node-tags.index');
+    Route::post('/nodes/tags', [NodeTagController::class, 'store'])->name('node-tags.store');
+    Route::delete('/nodes/tags/{id}', [NodeTagController::class, 'destroy'])->name('node-tags.destroy');
 
     // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // Estas rutas fueron creadas para gestión completa de árboles via API,
