@@ -6,11 +6,6 @@ type TagSelectorProps = {
     refreshAllTags?: () => void; 
 };
 
-type Tag = {
-    id: number;
-    node_id: number | string;
-    tag_value: string;
-};
 const diseases = [
     "Diabetes",
     "Hipertensión",

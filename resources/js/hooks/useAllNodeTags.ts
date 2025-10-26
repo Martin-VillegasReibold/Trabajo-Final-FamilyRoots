@@ -32,10 +32,11 @@ export default function useAllNodeTags(memberIds: (number | string)[], refreshTr
             setLoading(false);
         }
     };
+    const memberIdsString = memberIds.join(',');
 
     useEffect(() => {
         fetchAllTags();
-    }, [memberIds.join(','), refreshTrigger]); 
+    }, [memberIdsString, refreshTrigger, fetchAllTags]); 
 
     // Crear illnessMap basado en todas las tags
     const illnessMap: Record<number | string, boolean> = {};

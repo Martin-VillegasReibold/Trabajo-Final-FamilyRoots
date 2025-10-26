@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'; // ← Agregar useState y useCallback
+import React, { useState, useCallback } from 'react'; 
 import * as go from 'gojs';
 import ConfirmModal from '@/components/FamilyTree/ConfirmModal';
 import Toolbar from '@/components/FamilyTree/Toolbar';
@@ -10,14 +10,8 @@ import { useFamilyMemberManagement, type FamilyMember } from '@/components/Famil
 import { useModalManagement } from '@/components/FamilyTree/useModalManagement';
 import { useDiagramManagement } from '@/components/FamilyTree/useDiagramManagement';
 import { useLinkCreation } from '@/components/FamilyTree/useLinkCreation';
-import useAllNodeTags from '../../hooks/useAllNodeTags'; // ← AGREGAR ESTE IMPORT
+import useAllNodeTags from '../../hooks/useAllNodeTags'; 
 
-// Definir el tipo Tag
-type Tag = {
-    id: number;
-    node_id: number | string;
-    tag_value: string;
-};
 
 interface FamilyTree2Props {
     members: FamilyMember[];
@@ -41,7 +35,7 @@ export default function FamilyTree2({ members, onDataChange, toolbarProps }: Fam
     
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const memberIds = members.map(m => m.id).filter(Boolean) as (number | string)[];
-    const { illnessMap, loading: tagsLoading } = useAllNodeTags(memberIds, refreshTrigger); 
+    const { illnessMap } = useAllNodeTags(memberIds, refreshTrigger); 
     
     // Funcion para forzar recarga
     const refreshAllTags = () => setRefreshTrigger(prev => prev + 1)    
