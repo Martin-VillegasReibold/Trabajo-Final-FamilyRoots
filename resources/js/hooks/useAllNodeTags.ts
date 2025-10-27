@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 type Tag = {
@@ -11,8 +11,9 @@ export default function useAllNodeTags(memberIds: (number | string)[], refreshTr
     const [allTags, setAllTags] = useState<Record<number | string, Tag[]>>({});
     const [loading, setLoading] = useState(false);
 
-    // Cargar tags para todos los miembros
-    const fetchAllTags = async () => {
+    const memberIdsString = memberIds.join(',');
+
+    const fetchAllTags = useCallback(async () => {
         if (memberIds.length === 0) return;
 
         setLoading(true);
@@ -22,21 +23,20 @@ export default function useAllNodeTags(memberIds: (number | string)[], refreshTr
                     .then(res => [nodeId, res.data])
                     .catch(() => [nodeId, []])
             );
+
             const results = await Promise.all(requests);
             const tagsByNode = Object.fromEntries(results);
             setAllTags(tagsByNode);
-
         } catch (error) {
             console.error("Error cargando todas las tags:", error);
         } finally {
             setLoading(false);
         }
-    };
-    const memberIdsString = memberIds.join(',');
+    }, [memberIdsString]);
 
     useEffect(() => {
         fetchAllTags();
-    }, [memberIdsString, refreshTrigger, fetchAllTags]); 
+    }, [fetchAllTags, refreshTrigger]);
 
     // Crear illnessMap basado en todas las tags
     const illnessMap: Record<number | string, boolean> = {};
