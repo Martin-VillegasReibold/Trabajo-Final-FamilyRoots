@@ -2,6 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import ConfirmModal from '@/components/FamilyTree/ConfirmModal';
 import { Head, router as inertiaRouter } from '@inertiajs/react';
 import React, { useRef, useState } from 'react';
+import { Page } from '@inertiajs/core';
 
 export type Foto = { id?: number; url: string; nombre: string };
 export type MisFotosPageProps = {
@@ -45,11 +46,18 @@ export default function MisFotos(props: MisFotosPageProps) {
         formData.append('nombre', nombreFoto);
         inertiaRouter.post('/mis-fotos', formData, {
             forceFormData: true,
-            onSuccess: (page: any) => {
+            onSuccess: (page: Page<{ fotos?: Foto[]; url?: string; nombre?: string }>) => {
                 if (page.props.fotos && Array.isArray(page.props.fotos)) {
-                    setFotos(page.props.fotos.map((f: { id?: number; url: string; nombre: string }) => ({ id: f.id, url: f.url ?? '', nombre: f.nombre })));
+                    setFotos(page.props.fotos.map((f) => ({
+                        id: f.id,
+                        url: f.url ?? '',
+                        nombre: f.nombre,
+                    })));
                 } else if (typeof page.props.url === 'string' && typeof page.props.nombre === 'string') {
-                    setFotos((prev) => [...prev, { url: page.props.url, nombre: page.props.nombre }]);
+                    setFotos((prev) => [
+                        ...prev,
+                        { url: page.props.url || '', nombre: page.props.nombre || '' },
+                    ]);
                 }
                 setUploadMsg(`Foto subida: ${nombreFoto}`);
             },

@@ -67,7 +67,7 @@ export default function Inspector({
         try {
             const res = await axios.get('/api/mis-fotos');
             setUserPhotos(res.data.fotos || []);
-        } catch (e) {
+        } catch {
             setUserPhotos([]);
         } finally {
             setLoadingPhotos(false);
@@ -163,9 +163,9 @@ export default function Inspector({
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                     className="lucide lucide-message-circle-plus-icon lucide-message-circle-plus"
                                 >
                                     <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />

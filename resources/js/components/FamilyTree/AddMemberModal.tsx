@@ -56,7 +56,7 @@ export default function AddMemberModal({
         try {
             const res = await axios.get('/api/mis-fotos');
             setUserPhotos(res.data.fotos || []);
-        } catch (e) {
+        } catch {
             setUserPhotos([]);
         } finally {
             setLoadingPhotos(false);

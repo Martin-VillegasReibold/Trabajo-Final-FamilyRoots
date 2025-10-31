@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'; 
+import React, { useState } from 'react'; 
 import * as go from 'gojs';
 import ConfirmModal from '@/components/FamilyTree/ConfirmModal';
 import Toolbar from '@/components/FamilyTree/Toolbar';
