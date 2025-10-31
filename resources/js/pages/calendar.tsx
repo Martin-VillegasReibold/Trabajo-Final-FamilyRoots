@@ -108,6 +108,7 @@ export default function Calendar({ calendars, flash }: Props) {
             start: new Date(calendar.start),
             end: new Date(calendar.end),
             color: calendar.color,
+            allDay: true,
         }));
     }
 

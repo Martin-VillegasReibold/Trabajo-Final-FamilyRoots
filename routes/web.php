@@ -9,6 +9,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NodeTagController;
+use Illuminate\Support\Facades\Auth;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -74,6 +75,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/nodes/{node}/tags', [NodeTagController::class, 'index'])->name('node-tags.index');
     Route::post('/nodes/tags', [NodeTagController::class, 'store'])->name('node-tags.store');
     Route::delete('/nodes/tags/{id}', [NodeTagController::class, 'destroy'])->name('node-tags.destroy');
+
+    // Rutas para fotos
+    Route::get('/mis-fotos', [\App\Http\Controllers\FotoController::class, 'index'])->name('mis-fotos');
+    Route::post('/mis-fotos', [\App\Http\Controllers\FotoController::class, 'store'])->name('mis-fotos.store');
+    Route::delete('/mis-fotos/{id}', [\App\Http\Controllers\FotoController::class, 'destroy'])->name('mis-fotos.destroy');
+
+    // API para obtener fotos del usuario autenticado (para el modal de selección de imagen)
+    Route::get('/api/mis-fotos', function () {
+        $user = Auth::user();
+        $fotos = $user->fotos()->get(['id', 'nombre', 'ruta'])
+            ->map(function ($foto) {
+                return [
+                    'id' => $foto->id,
+                    'nombre' => $foto->nombre,
+                    'url' => '/storage/' . ltrim($foto->ruta, '/'),
+                ];
+            })->values()->toArray();
+        return response()->json(['fotos' => $fotos]);
+    });
 
     // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // Estas rutas fueron creadas para gestión completa de árboles via API,

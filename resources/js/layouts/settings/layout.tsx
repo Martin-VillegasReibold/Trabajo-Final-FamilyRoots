@@ -1,27 +1,27 @@
-import Heading from '@/components/heading';
+//import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
+//import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
-import { show } from '@/routes/two-factor';
+//import { show } from '@/routes/two-factor';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
+        title: 'Perfil',
         href: edit(),
         icon: null,
     },
     {
-        title: 'Password',
+        title: 'Contraseña',
         href: editPassword(),
         icon: null,
     },
-    {
+    /*{
         title: 'Two-Factor Auth',
         href: show(),
         icon: null,
@@ -30,7 +30,7 @@ const sidebarNavItems: NavItem[] = [
         title: 'Appearance',
         href: editAppearance(),
         icon: null,
-    },
+    },*/
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
@@ -43,10 +43,10 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
     return (
         <div className="px-4 py-6">
-            <Heading
+          {/* <Heading
                 title="Settings"
                 description="Manage your profile and account settings"
-            />
+            />*/}
 
             <div className="flex flex-col lg:flex-row lg:space-x-12">
                 <aside className="w-full max-w-xl lg:w-48">

@@ -1,4 +1,6 @@
 import React from 'react';
+import UserPhotosModal, { UserPhoto } from './UserPhotosModal';
+import axios from 'axios';
 
 interface FamilyMember {
     key: number | string;
@@ -43,6 +45,24 @@ export default function AddMemberModal({
     modalConfirmRef,
     modalCancelRef
 }: AddMemberModalProps) {
+    // Estado para el modal de fotos de usuario
+    const [showPhotosModal, setShowPhotosModal] = React.useState(false);
+    const [userPhotos, setUserPhotos] = React.useState<UserPhoto[]>([]);
+    const [loadingPhotos, setLoadingPhotos] = React.useState(false);
+
+    const openPhotosModal = async () => {
+        setShowPhotosModal(true);
+        setLoadingPhotos(true);
+        try {
+            const res = await axios.get('/api/mis-fotos');
+            setUserPhotos(res.data.fotos || []);
+        } catch (e) {
+            setUserPhotos([]);
+        } finally {
+            setLoadingPhotos(false);
+        }
+    };
+
     if (!showAddModal) return null;
 
     return (
@@ -103,12 +123,35 @@ export default function AddMemberModal({
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Imagen (URL)
                         </label>
-                        <input
-                            value={newMember.img || ''}
-                            onChange={(e) => setNewMember(prev => ({ ...prev, img: e.target.value }))}
-                            className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-                            placeholder="https://..."
+                        <div className="flex gap-2 items-center">
+                            <input
+                                value={newMember.img || ''}
+                                onChange={(e) => setNewMember(prev => ({ ...prev, img: e.target.value }))}
+                                className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+                                placeholder="https://..."
+                            />
+                            <button
+                                type="button"
+                                className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800"
+                                onClick={openPhotosModal}
+                                title="Elegir de Mis Fotos"
+                            >
+                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16V4a2 2 0 012-2h12a2 2 0 012 2v12M4 16l4-4a2 2 0 012.828 0l2.344 2.344a2 2 0 002.828 0L20 8M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4" /></svg>
+                                Mis Fotos
+                            </button>
+                        </div>
+                        <UserPhotosModal
+                            open={showPhotosModal}
+                            photos={userPhotos}
+                            onSelect={(url) => {
+                                setNewMember(prev => ({ ...prev, img: url }));
+                                setShowPhotosModal(false);
+                            }}
+                            onClose={() => setShowPhotosModal(false)}
                         />
+                        {loadingPhotos && showPhotosModal && (
+                            <div className="text-xs text-gray-400 mt-2">Cargando fotos...</div>
+                        )}
                     </div>
                 </div>
                 

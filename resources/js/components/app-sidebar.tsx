@@ -1,4 +1,4 @@
-import { NavFooter } from '@/components/nav-footer';
+//import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -14,7 +14,7 @@ import { dashboard } from '@/routes';
 import { home } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Calendar, Users, Home } from 'lucide-react';
+import { Calendar, Users, Home, UploadIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 import { TreePine, Plus  } from 'lucide-react';
 
@@ -45,6 +45,11 @@ const mainNavItems: NavItem[] = [
         href: '/actividades',
         icon: Users,
     },
+    {
+        title: 'Mis Fotos',
+        href: '/mis-fotos',
+        icon: UploadIcon,
+    },
 ];
 
 // const footerNavItems: NavItem[] = [
@@ -62,14 +67,14 @@ const mainNavItems: NavItem[] = [
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="inset" className="bg-slate-50 dark:bg-gray-900">
-            <SidebarHeader className="bg-white dark:bg-gray-800 shadow-sm">
+        <Sidebar collapsible="icon" variant="inset" className="bg-slate-50 dark:bg-gray-900 rounded-xl">
+            <SidebarHeader className="bg-white dark:bg-gray-800 shadow-sm rounded-t-xl">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton 
                             size="lg" 
                             asChild 
-                            className="min-h-16 px-4 hover:bg-emerald-50 hover:text-emerald-800 dark:hover:bg-emerald-900/20 transition-colors duration-200" 
+                            className="min-h-16 px-4 hover:bg-emerald-50 hover:text-emerald-800 dark:hover:bg-emerald-900/20 transition-colors duration-200 rounded-xl" 
                         >
                             <Link href={home()} prefetch>
                                 <AppLogo />
@@ -79,7 +84,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="px-3 py-4 bg-white dark:bg-gray-800">
+            <SidebarContent className="px-3 py-4 bg-white dark:bg-gray-800 rounded-none">
                 <div className="mb-4">
                     <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
                         Navegación
@@ -88,7 +93,7 @@ export function AppSidebar() {
                 </div>
             </SidebarContent>
 
-            <SidebarFooter className="bg-white dark:bg-gray-800 p-3">
+            <SidebarFooter className="bg-white dark:bg-gray-800 p-3 rounded-b-xl flex justify-center items-center">
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

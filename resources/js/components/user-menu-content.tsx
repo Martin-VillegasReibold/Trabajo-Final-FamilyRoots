@@ -4,19 +4,19 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { UserInfo } from '@/components/user-info';
+//import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
-import { type User } from '@/types';
+//import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
-
+/*
 interface UserMenuContentProps {
     user: User;
 }
-
-export function UserMenuContent({ user }: UserMenuContentProps) {
+*/
+export function UserMenuContent(/*{ user }: UserMenuContentProps*/) {
     const cleanup = useMobileNavigation();
 
     const handleLogout = () => {
@@ -25,11 +25,11 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
     };
 
     return (
-        <>
+        <div style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
             <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                {/*<div className="flex items-center text-left text-xs">
                     <UserInfo user={user} showEmail={true} />
-                </div>
+                </div>*/}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -42,7 +42,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         onClick={cleanup}
                     >
                         <Settings className="mr-2" />
-                        Settings
+                        Configuración
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -56,9 +56,9 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     data-test="logout-button"
                 >
                     <LogOut className="mr-2" />
-                    Log out
+                    Cerrar sesión
                 </Link>
             </DropdownMenuItem>
-        </>
+        </div>
     );
 }

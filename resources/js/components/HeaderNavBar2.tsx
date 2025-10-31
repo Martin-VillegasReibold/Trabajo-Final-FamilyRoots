@@ -1,5 +1,5 @@
 import ThemeToggle from '@/components/theme-toggle';
-import { dashboard, home, login, register } from '@/routes';
+import { arboles, dashboard, home, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
@@ -82,10 +82,10 @@ export default function HeaderNavBar2() {
                         <ThemeToggle />
                         {auth?.user ? (
                             <Link
-                                href={dashboard()}
+                                href={arboles()}
                                 className="inline-block rounded-sm border border-[#19140035] px-4 py-1 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                             >
-                                Dashboard
+                                Mis Arboles
                             </Link>
                         ) : (
                             <>

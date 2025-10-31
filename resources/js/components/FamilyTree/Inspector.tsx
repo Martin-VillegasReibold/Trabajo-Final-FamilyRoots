@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import useCommentsStatus from '@/hooks/useCommentStatus';
 import { router } from '@inertiajs/react';
 import React, { useState } from 'react';
+import UserPhotosModal, { UserPhoto } from './UserPhotosModal';
+import axios from 'axios';
 import TagSelector from '../TagSelector';
 
 interface FamilyMember {
@@ -54,6 +56,23 @@ export default function Inspector({
     const { hasComments, setHasComments } = useCommentsStatus(selected?.id);
 
     // Estado para el modal de recordar
+    // Estado para el modal de fotos de usuario
+    const [showPhotosModal, setShowPhotosModal] = useState(false);
+    const [userPhotos, setUserPhotos] = useState<UserPhoto[]>([]);
+    const [loadingPhotos, setLoadingPhotos] = useState(false);
+
+    const openPhotosModal = async () => {
+        setShowPhotosModal(true);
+        setLoadingPhotos(true);
+        try {
+            const res = await axios.get('/api/mis-fotos');
+            setUserPhotos(res.data.fotos || []);
+        } catch (e) {
+            setUserPhotos([]);
+        } finally {
+            setLoadingPhotos(false);
+        }
+    };
     const [rememberType, setRememberType] = useState<'birth' | 'death' | null>(
         null,
     );
@@ -449,16 +468,39 @@ export default function Inspector({
                                             <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Imagen (URL)
                                             </label>
-                                            <input
-                                                value={selected.img || ''}
-                                                onChange={(e) =>
-                                                    updateSelectedMember({
-                                                        img: e.target.value,
-                                                    })
-                                                }
-                                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                                                placeholder="https://ejemplo.com/foto.jpg"
+                                            <div className="flex gap-2 items-center">
+                                                <input
+                                                    value={selected.img || ''}
+                                                    onChange={(e) =>
+                                                        updateSelectedMember({
+                                                            img: e.target.value,
+                                                        })
+                                                    }
+                                                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                                                    placeholder="https://ejemplo.com/foto.jpg"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800"
+                                                    onClick={openPhotosModal}
+                                                    title="Elegir de Mis Fotos"
+                                                >
+                                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16V4a2 2 0 012-2h12a2 2 0 012 2v12M4 16l4-4a2 2 0 012.828 0l2.344 2.344a2 2 0 002.828 0L20 8M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4" /></svg>
+                                                    Mis Fotos
+                                                </button>
+                                            </div>
+                                            <UserPhotosModal
+                                                open={showPhotosModal}
+                                                photos={userPhotos}
+                                                onSelect={(url) => {
+                                                    updateSelectedMember({ img: url });
+                                                    setShowPhotosModal(false);
+                                                }}
+                                                onClose={() => setShowPhotosModal(false)}
                                             />
+                                            {loadingPhotos && showPhotosModal && (
+                                                <div className="text-xs text-gray-400 mt-2">Cargando fotos...</div>
+                                            )}
                                         </div>
                                     </div>
 
