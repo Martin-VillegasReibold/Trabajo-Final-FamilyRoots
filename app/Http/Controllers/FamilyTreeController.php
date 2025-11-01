@@ -173,12 +173,7 @@ class FamilyTreeController extends Controller
 
     public function getTreeData(Arbol $arbol)
     {
-        $this->checkAuth();
-
-        if ($arbol->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
+        // Permitir acceso público de solo lectura al overview
         return response()->json($arbol->getTreeData());
     }
 

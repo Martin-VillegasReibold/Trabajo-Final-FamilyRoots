@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import * as go from 'gojs';
 import { FamilyMember } from './useFamilyMemberManagement';
 // Hook para gestionar el diagrama de GoJS, incluyendo su inicialización, actualización y 
@@ -22,109 +22,8 @@ export function useDiagramManagement(
         handleLinkCreationStartRef.current = handleLinkCreationStart;
     }, [setSelected, handleLinkCreationStart]);
 
-    const buildModel = useCallback((data: FamilyMember[], illnessMap: Record<number | string, boolean>) => {
-        const nodeDataArray: FamilyMember[] = [];
-        const linkDataArray: Array<{ from: number | string; to: number | string; category?: string }> = [];
-
-        // Add all family members as nodes
-        data.forEach((member) => {
-            nodeDataArray.push({
-                id: member.id,
-                key: member.key,
-                name: member.name,
-                gender: member.gender || 'Other',
-                birthYear: member.birthYear,
-                deathYear: member.deathYear,
-                img: member.img || '/imagenes/logo Arbol.png',
-                spouses: member.spouses || [],
-                parents: member.parents || [],
-                isMarriageNode: false,
-                hasIllness: illnessMap[member.id!] || false 
-            });
-        });
-
-        // Create marriage nodes and links for couples
-        const marriageNodes = new Map<string, FamilyMember>();
-        const processedMarriages = new Set<string>();
-
-        data.forEach(member => {
-            if (member.spouses && member.spouses.length > 0) {
-                member.spouses.forEach(spouseKey => {
-                    // Create a unique key for this marriage (sorted to avoid duplicates)
-                    const marriageKey = [member.key, spouseKey].sort().join('-');
-
-                    if (!processedMarriages.has(marriageKey)) {
-                        processedMarriages.add(marriageKey);
-
-                        // Create marriage node
-                        const marriageNodeKey = `marriage-${marriageKey}`;
-                        const marriageNode: FamilyMember = {
-                            key: marriageNodeKey,
-                            name: '♥',
-                            isMarriageNode: true,
-                            spouseKeys: [member.key, spouseKey]
-                        };
-                        marriageNodes.set(marriageKey, marriageNode);
-
-                        nodeDataArray.push(marriageNode);
-
-                        // Create links from spouses to marriage node
-                        linkDataArray.push({
-                            from: member.key,
-                            to: marriageNodeKey,
-                            category: 'marriage'
-                        });
-                        linkDataArray.push({
-                            from: spouseKey,
-                            to: marriageNodeKey,
-                            category: 'marriage'
-                        });
-                    }
-                });
-            }
-        });
-
-        // Create parent-child links
-        data.forEach(member => {
-            if (member.parents && member.parents.length > 0) {
-                // Check if both parents exist and have a marriage relationship
-                if (member.parents.length === 2) {
-                    const [parent1, parent2] = member.parents;
-                    const marriageKey = [parent1, parent2].sort().join('-');
-                    const marriageNode = marriageNodes.get(marriageKey);
-
-                    if (marriageNode) {
-                        // Link from marriage node to child
-                        linkDataArray.push({
-                            from: marriageNode.key,
-                            to: member.key,
-                            category: 'parent'
-                        });
-                    } else {
-                        // No marriage relationship, link from both parents individually
-                        member.parents.forEach(parentKey => {
-                            linkDataArray.push({
-                                from: parentKey,
-                                to: member.key,
-                                category: 'parent'
-                            });
-                        });
-                    }
-                } else {
-                    // Single parent
-                    member.parents.forEach(parentKey => {
-                        linkDataArray.push({
-                            from: parentKey,
-                            to: member.key,
-                            category: 'parent'
-                        });
-                    });
-                }
-            }
-        });
-
-        return { nodeDataArray, linkDataArray };
-    }, []);
+    // Exported separately below
+    // buildModel se define y exporta al final del archivo para evitar duplicación
 
     // Initialize diagram (only once)
     useEffect(() => {
@@ -229,7 +128,6 @@ export function useDiagramManagement(
                     imageStretch: go.GraphObject.UniformToFill,
                 },
                     new go.Binding('source', 'img'),
-                    new go.Binding('alt', 'name'),
                     new go.Binding('visible', '', (data) => !data.isMarriageNode)),
                 $(go.TextBlock, {
                     font: '600 11px Inter, system-ui, -apple-system, "Segoe UI", Roboto',  // Slightly smaller font
@@ -268,7 +166,7 @@ export function useDiagramManagement(
                     alignment: go.Spot.TopRight,
                     margin: new go.Margin(2, 2, 2, 0),
             }, new go.Binding('visible','', (data) => !!data.hasIllness && !data.isMarriageNode)),
-            new go.Binding('className', '', nodeData => `illness-icon tooltip-trigger-${nodeData.key}`)
+            // Eliminado binding inválido de 'className' (GoJS no soporta esta propiedad)
         );
 
         // Define different link templates for different relationships
@@ -460,6 +358,7 @@ export function useDiagramManagement(
     const zoomOut = () => diagramRef.current?.commandHandler.decreaseZoom();
     const fitToView = () => diagramRef.current?.commandHandler.zoomToFit();
 
+
     return {
         divRef,
         diagramRef,
@@ -467,4 +366,112 @@ export function useDiagramManagement(
         zoomOut,
         fitToView
     };
+}
+
+// Export buildModel as a standalone function for use in TreeOverview
+export function buildModel(
+    data: FamilyMember[],
+    illnessMap: Record<number | string, boolean>
+) {
+    const nodeDataArray: FamilyMember[] = [];
+    const linkDataArray: Array<{ from: number | string; to: number | string; category?: string }> = [];
+
+    // Add all family members as nodes
+    data.forEach((member) => {
+        nodeDataArray.push({
+            id: member.id,
+            key: member.key,
+            name: member.name,
+            gender: member.gender || 'Other',
+            birthYear: member.birthYear,
+            deathYear: member.deathYear,
+            img: member.img || '/imagenes/logo Arbol.png',
+            spouses: member.spouses || [],
+            parents: member.parents || [],
+            isMarriageNode: false,
+            hasIllness: illnessMap[member.id!] || false 
+        });
+    });
+
+    // Create marriage nodes and links for couples
+    const marriageNodes = new Map<string, FamilyMember>();
+    const processedMarriages = new Set<string>();
+
+    data.forEach(member => {
+        if (member.spouses && member.spouses.length > 0) {
+            member.spouses.forEach(spouseKey => {
+                // Create a unique key for this marriage (sorted to avoid duplicates)
+                const marriageKey = [member.key, spouseKey].sort().join('-');
+
+                if (!processedMarriages.has(marriageKey)) {
+                    processedMarriages.add(marriageKey);
+
+                    // Create marriage node
+                    const marriageNodeKey = `marriage-${marriageKey}`;
+                    const marriageNode: FamilyMember = {
+                        key: marriageNodeKey,
+                        name: '♥',
+                        isMarriageNode: true,
+                        spouseKeys: [member.key, spouseKey]
+                    };
+                    marriageNodes.set(marriageKey, marriageNode);
+
+                    nodeDataArray.push(marriageNode);
+
+                    // Create links from spouses to marriage node
+                    linkDataArray.push({
+                        from: member.key,
+                        to: marriageNodeKey,
+                        category: 'marriage'
+                    });
+                    linkDataArray.push({
+                        from: spouseKey,
+                        to: marriageNodeKey,
+                        category: 'marriage'
+                    });
+                }
+            });
+        }
+    });
+
+    // Create parent-child links
+    data.forEach(member => {
+        if (member.parents && member.parents.length > 0) {
+            // Check if both parents exist and have a marriage relationship
+            if (member.parents.length === 2) {
+                const [parent1, parent2] = member.parents;
+                const marriageKey = [parent1, parent2].sort().join('-');
+                const marriageNode = marriageNodes.get(marriageKey);
+
+                if (marriageNode) {
+                    // Link from marriage node to child
+                    linkDataArray.push({
+                        from: marriageNode.key,
+                        to: member.key,
+                        category: 'parent'
+                    });
+                } else {
+                    // No marriage relationship, link from both parents individually
+                    member.parents.forEach(parentKey => {
+                        linkDataArray.push({
+                            from: parentKey,
+                            to: member.key,
+                            category: 'parent'
+                        });
+                    });
+                }
+            } else {
+                // Single parent
+                member.parents.forEach(parentKey => {
+                    linkDataArray.push({
+                        from: parentKey,
+                        to: member.key,
+                        category: 'parent'
+                    });
+                });
+            }
+        }
+    });
+
+    return { nodeDataArray, linkDataArray };
 }

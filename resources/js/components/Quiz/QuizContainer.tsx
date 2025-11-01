@@ -143,12 +143,11 @@ export default function QuizContainer({ userTrees }: Props) {
     }
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
-                <div className="mx-auto w-full max-w-4xl">
+        <div className="flex-1 bg-gradient-to-br from-emerald-50 to-blue-50 p-4 flex items-center justify-center overflow-hidden dark:from-gray-900 dark:to-gray-800">
+            <div className="w-full max-w-3xl">
+                <div className="rounded-2xl bg-white/95 backdrop-blur-sm p-8 shadow-2xl border border-emerald-100/50 md:p-12 dark:bg-gray-800/95 dark:border-gray-700/50">
                     <QuizHeader />
-                    
-                    <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800 mx-auto max-w-2xl">
+                    <div className="rounded-lg bg-white p-10 shadow-lg dark:bg-gray-800 mx-auto max-w-xl">
                         {!quizStarted && !quizFinished && (
                             <TreeSelector
                                 userTrees={userTrees}

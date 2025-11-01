@@ -55,9 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/arboles/api/{arbol}/save-data', [\App\Http\Controllers\FamilyTreeController::class, 'saveTreeData'])
         ->name('arboles.api.save-data');
     
-    // Nueva ruta para obtener datos del arbol (para el Overview)
-    Route::get('/arboles/api/{arbol}/data', [\App\Http\Controllers\FamilyTreeController::class, 'getTreeData'])
-        ->name('arboles.api.data');
+
 
     // Comentarios
     Route::get('/nodes/{node}/comments', [CommentController::class, 'index']);
@@ -114,6 +112,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //     ->name('arboles.api.delete-node');
 
 });
+
+    // Nueva ruta para obtener datos del arbol (para el Overview)
+    Route::get('/arboles/api/{arbol}/data', [\App\Http\Controllers\FamilyTreeController::class, 'getTreeData'])
+        ->name('arboles.api.data');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

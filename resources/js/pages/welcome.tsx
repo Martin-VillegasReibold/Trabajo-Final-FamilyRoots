@@ -5,6 +5,7 @@ import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
 import { useRef, useState } from 'react';
+import TreeOverview from '../components/TreeOverview';
 
 interface Arbol {
     id: number;
@@ -261,39 +262,48 @@ export default function Welcome() {
                                     {arboles.length !== 1 ? 's' : ''}
                                 </div>
                                 <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                    {arboles.map((a) => (
-                                        <Link
-                                            key={a.id}
-                                            href={`/espacio-trabajo/${a.id}`}
-                                            className="block rounded-lg border bg-white p-5 hover:shadow-lg focus:ring-2 focus:ring-emerald-200 focus:outline-none dark:bg-gray-800"
-                                            role="article"
-                                            aria-labelledby={`arbol-${a.id}-title`}
-                                        >
-                                            {/* Imagen genérica del árbol (encima del nombre) */}
-                                            <div className="mb-4 flex justify-center">
-                                                <img
-                                                    src="/imagenes/logo Arbol.png"
-                                                    alt={`Imagen genérica del árbol ${a.name}`}
-                                                    className="h-60 w-60 rounded-md object-cover"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-
-                                            <h2
-                                                id={`arbol-${a.id}-title`}
-                                                className="mb-2 text-lg font-semibold text-gray-900 dark:text-white"
+                                    {arboles.map((a) => {
+                                        // Solo permitir click si el usuario es el creador
+                                        const isOwner = auth?.user && a.user?.id === auth.user.id;
+                                        const handleClick = (e: React.MouseEvent) => {
+                                            if (!isOwner) {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }
+                                        };
+                                        return (
+                                            <Link
+                                                key={a.id}
+                                                href={isOwner ? `/espacio-trabajo/${a.id}` : undefined}
+                                                onClick={handleClick}
+                                                className="block rounded-lg border bg-white p-5 hover:shadow-lg focus:ring-2 focus:ring-emerald-200 focus:outline-none dark:bg-gray-800"
+                                                role="article"
+                                                aria-labelledby={`arbol-${a.id}-title`}
+                                                tabIndex={isOwner ? 0 : -1}
+                                                style={!isOwner ? { cursor: 'not-allowed', pointerEvents: 'auto', opacity: 0.7 } : {}}
                                             >
-                                                {a.name}
-                                            </h2>
-                                            <p className="text-base text-gray-700 dark:text-gray-300">
-                                                ID: {a.id}
-                                            </p>
-                                            <p className="text-base text-gray-700 dark:text-gray-300">
-                                                Creado por:{' '}
-                                                {a.user?.name ?? 'Desconocido'}
-                                            </p>
-                                        </Link>
-                                    ))}
+                                                {/* Overview visual del árbol */}
+                                                <div className="mb-4 flex justify-center">
+                                                    <div className="w-full max-w-xs">
+                                                        <TreeOverview arbolId={a.id} />
+                                                    </div>
+                                                </div>
+                                                <h2
+                                                    id={`arbol-${a.id}-title`}
+                                                    className="mb-2 text-lg font-semibold text-gray-900 dark:text-white"
+                                                >
+                                                    {a.name}
+                                                </h2>
+                                                <p className="text-base text-gray-700 dark:text-gray-300">
+                                                    ID: {a.id}
+                                                </p>
+                                                <p className="text-base text-gray-700 dark:text-gray-300">
+                                                    Creado por:{' '}
+                                                    {a.user?.name ?? 'Desconocido'}
+                                                </p>
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                                 {arboles.length === 0 && (
                                     <div className="mt-6 text-base text-gray-700">

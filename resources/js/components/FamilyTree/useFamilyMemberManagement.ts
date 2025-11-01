@@ -51,7 +51,7 @@ export function useFamilyMemberManagement(
         if (!newMember.name.trim() || !selected) return;
 
         const newKey = Date.now();
-        let newMemberData: FamilyMember = {
+        const newMemberData: FamilyMember = {
             id: undefined, // se completará al guardar en backend
             key: newKey,
             name: newMember.name,
