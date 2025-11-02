@@ -12,6 +12,7 @@ export interface QuizQuestion {
     answers: string[];
     correctAnswer: number;
     type: string;
+    img?: string;
 }
 
 export interface QuizResult {

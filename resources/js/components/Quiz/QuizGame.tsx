@@ -21,6 +21,12 @@ export default function QuizGame({
     onNextQuestion,
     onPreviousQuestion
 }: Props) {
+    const currentQ = quizData[currentQuestion];
+    if (!currentQ) {
+        return (
+            <div className="text-center text-red-600 p-8">Pregunta no disponible.</div>
+        );
+    }
     return (
         <div className="space-y-6 max-w-2xl mx-auto">
             {/* Progress */}
@@ -44,18 +50,28 @@ export default function QuizGame({
             {/* Question */}
             <div className="rounded-lg bg-white p-4 shadow-sm md:p-6 dark:bg-gray-800">
                 <div className="mb-4">
+                    {currentQ.img && (
+                        <div className="flex justify-center mb-4">
+                            <img
+                                src={currentQ.img}
+                                alt="Foto de la persona de la pregunta"
+                                className="w-24 h-24 object-cover rounded-full border border-emerald-200 shadow"
+                                onError={e => (e.currentTarget.style.display = 'none')}
+                            />
+                        </div>
+                    )}
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        {quizData[currentQuestion].question}
+                        {currentQ.question}
                     </h2>
-                    {quizData[currentQuestion].description && (
+                    {currentQ.description && (
                         <p className="text-sm text-gray-600 dark:text-gray-300">
-                            {quizData[currentQuestion].description}
+                            {currentQ.description}
                         </p>
                     )}
                 </div>
                 
                 <div className="space-y-2">
-                    {quizData[currentQuestion].answers.map((answer, index) => (
+                    {currentQ.answers.map((answer, index) => (
                         <button
                             key={index}
                             onClick={() => onAnswerSelect(index)}

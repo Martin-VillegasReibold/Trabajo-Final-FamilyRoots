@@ -6,7 +6,7 @@ use App\Http\Controllers\ArbolController;
 use App\Models\Arbol;
 use App\Http\Controllers\BuscadorController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuizController2;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NodeTagController;
 use Illuminate\Support\Facades\Auth;
@@ -31,11 +31,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('crear-arbol');
 
-    Route::get('actividades', [QuizController::class, 'index'])->name('activities');
+    Route::get('actividades', [QuizController2::class, 'index'])->name('activities');
 
     // Quiz Routes
-    Route::get('/quiz/generate/{treeId}', [QuizController::class, 'generateQuizForTree'])->name('quiz.generate');
-    Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
+    Route::get('/quiz/generate/{treeId}', [QuizController2::class, 'generateQuizForTree'])->name('quiz.generate');
+    Route::post('/quiz/submit', [QuizController2::class, 'submitQuiz'])->name('quiz.submit');
 
     // accion POST para guardar en BD
     Route::post('crear-arbol', [ArbolController::class, 'store'])->name('arbol.store');
