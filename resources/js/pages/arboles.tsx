@@ -168,7 +168,7 @@ export default function Arboles() {
                                 </p>
                                 <Link 
                                     href={crearArbol()} 
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 transition-all duration-200"
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 transition-all duration-200 cursor-pointer"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -185,7 +185,7 @@ export default function Arboles() {
                                 >
                                     <Link 
                                         href={`/espacio-trabajo/${a.id}`} 
-                                        className="block focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 rounded-lg"
+                                        className="block focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 rounded-lg cursor-pointer"
                                         aria-describedby={`tree-description-${a.id}`}
                                     >
                                         <div className="mb-4 transform group-hover:scale-[1.02] transition-transform duration-200" aria-hidden="true">
@@ -208,12 +208,14 @@ export default function Arboles() {
                                             variant="editar" 
                                             onClick={() => handleOpenEdit(a)}
                                             aria-label={`Editar árbol ${a.name}`}
+                                            className="cursor-pointer"
                                         />
                                         <BotonAccion 
                                             text="Eliminar" 
                                             variant="eliminar" 
                                             onClick={() => handleDelete(a.id)}
                                             aria-label={`Eliminar árbol ${a.name}`}
+                                            className="cursor-pointer"
                                         />
                                     </div>
                                 </article>
@@ -232,7 +234,7 @@ export default function Arboles() {
                                 <p className="text-gray-600 mb-6 leading-relaxed dark:text-gray-300">Creá tu primer árbol genealógico y comenzá a documentar la historia de tu familia para las futuras generaciones.</p>
                                 <Link 
                                     href={crearArbol()} 
-                                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-base font-semibold text-white hover:from-emerald-700 hover:to-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
+                                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-base font-semibold text-white hover:from-emerald-700 hover:to-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 cursor-pointer"
                                     aria-describedby="crear-primer-arbol-help"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

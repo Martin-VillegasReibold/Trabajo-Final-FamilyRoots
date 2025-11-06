@@ -66,7 +66,8 @@ class QuizController2 extends Controller
             'nieto' => 0,
             'tio' => 0,
             'sobrino' => 0,
-            'birth' => 0
+            'birth_year' => 0,
+            'death_year' => 0
         ];
         foreach ($shuffledMembers as $member) {
             if (in_array($member['key'], $usedBaseKeys)) continue;
@@ -76,12 +77,15 @@ class QuizController2 extends Controller
             if ($type === 'rel') {
                 $added = $this->tryAddRelationshipQuestion($member, $familyMembers, $questions, $questionType, $typeCounts, $maxPerType);
             } elseif ($type === 'birth') {
-                if ($typeCounts['birth'] < $maxPerType) {
+                if ($typeCounts['birth_year'] < $maxPerType) {
                     $added = $this->tryAddBirthQuestion($member, $familyMembers, $questions, $questionType);
-                    if ($added) $typeCounts['birth']++;
+                    if ($added) $typeCounts['birth_year']++;
                 }
             } elseif ($type === 'death') {
-                $added = $this->tryAddDeathQuestion($member, $familyMembers, $questions, $questionType);
+                if ($typeCounts['death_year'] < $maxPerType) {
+                    $added = $this->tryAddDeathQuestion($member, $familyMembers, $questions, $questionType);
+                    if ($added) $typeCounts['death_year']++;
+                }
             }
             if ($added && $questionType) {
                 $usedBaseKeys[] = $member['key'];
@@ -100,12 +104,15 @@ class QuizController2 extends Controller
                     if ($otherType === 'rel') {
                         $added = $this->tryAddRelationshipQuestion($member, $familyMembers, $questions, $questionType, $typeCounts, $maxPerType);
                     } elseif ($otherType === 'birth') {
-                        if ($typeCounts['birth'] < $maxPerType) {
+                        if ($typeCounts['birth_year'] < $maxPerType) {
                             $added = $this->tryAddBirthQuestion($member, $familyMembers, $questions, $questionType);
-                            if ($added) $typeCounts['birth']++;
+                            if ($added) $typeCounts['birth_year']++;
                         }
                     } elseif ($otherType === 'death') {
-                        $added = $this->tryAddDeathQuestion($member, $familyMembers, $questions, $questionType);
+                        if ($typeCounts['death_year'] < $maxPerType) {
+                            $added = $this->tryAddDeathQuestion($member, $familyMembers, $questions, $questionType);
+                            if ($added) $typeCounts['death_year']++;
+                        }
                     }
                     if ($added && $questionType) {
                         $usedBaseKeys[] = $member['key'];
@@ -323,18 +330,19 @@ class QuizController2 extends Controller
 
     // Intenta agregar una pregunta de nacimiento
     private function tryAddBirthQuestion($member, $familyMembers, &$questions) {
-        if (!isset($member['birth_year']) || !$member['birth_year']) return false;
+        if (!isset($member['birth_date']) || !$member['birth_date']) return false;
+        $birthYear = substr($member['birth_date'], 0, 4);
         $wrongYears = [];
         foreach ($familyMembers as $other) {
-            if ($other['key'] !== $member['key'] && isset($other['birth_year']) && $other['birth_year']) {
-                $wrongYears[] = $other['birth_year'];
+            if ($other['key'] !== $member['key'] && isset($other['birth_date']) && $other['birth_date']) {
+                $wrongYears[] = substr($other['birth_date'], 0, 4);
             }
         }
         $wrongYears = array_unique($wrongYears);
         if (count($wrongYears) >= 3) {
             shuffle($wrongYears);
             $answers = array_slice($wrongYears, 0, 3);
-            $answers[] = $member['birth_year'];
+            $answers[] = $birthYear;
             shuffle($answers);
             $questions->push([
                 'id' => 'birth_' . $member['key'],
@@ -342,7 +350,7 @@ class QuizController2 extends Controller
                 'img' => $member['img'] ?? null,
                 'description' => 'Año de nacimiento',
                 'answers' => collect($answers),
-                'correctAnswer' => array_search($member['birth_year'], $answers),
+                'correctAnswer' => array_search($birthYear, $answers),
                 'type' => 'birth_year',
             ]);
             return true;
@@ -352,18 +360,19 @@ class QuizController2 extends Controller
 
     // Intenta agregar una pregunta de fallecimiento
     private function tryAddDeathQuestion($member, $familyMembers, &$questions) {
-        if (!isset($member['death_year']) || !$member['death_year']) return false;
+        if (!isset($member['death_date']) || !$member['death_date']) return false;
+        $deathYear = substr($member['death_date'], 0, 4);
         $wrongYears = [];
         foreach ($familyMembers as $other) {
-            if ($other['key'] !== $member['key'] && isset($other['death_year']) && $other['death_year']) {
-                $wrongYears[] = $other['death_year'];
+            if ($other['key'] !== $member['key'] && isset($other['death_date']) && $other['death_date']) {
+                $wrongYears[] = substr($other['death_date'], 0, 4);
             }
         }
         $wrongYears = array_unique($wrongYears);
         if (count($wrongYears) >= 3) {
             shuffle($wrongYears);
             $answers = array_slice($wrongYears, 0, 3);
-            $answers[] = $member['death_year'];
+            $answers[] = $deathYear;
             shuffle($answers);
             $questions->push([
                 'id' => 'death_' . $member['key'],
@@ -371,7 +380,7 @@ class QuizController2 extends Controller
                 'img' => $member['img'] ?? null,
                 'description' => 'Año de fallecimiento',
                 'answers' => collect($answers),
-                'correctAnswer' => array_search($member['death_year'], $answers),
+                'correctAnswer' => array_search($deathYear, $answers),
                 'type' => 'death_year',
             ]);
             return true;
@@ -476,8 +485,8 @@ class QuizController2 extends Controller
                 'key' => $node->node_key,
                 'name' => $node->name,
                 'img' => $node->img ?? null,
-                'birth_year' => $node->birth_year ?? null,
-                'death_year' => $node->death_year ?? null,
+                'birth_date' => $node->birth_date ?? null,
+                'death_date' => $node->death_date ?? null,
                 'parents' => [],
                 'spouses' => [],
             ];

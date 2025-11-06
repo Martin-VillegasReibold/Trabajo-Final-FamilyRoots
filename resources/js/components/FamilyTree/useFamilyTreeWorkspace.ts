@@ -67,7 +67,7 @@ export function useFamilyTreeWorkspace(
                     }))
                 );
             } else {
-                setFamilyMembersState([
+                /*setFamilyMembersState([
                     {
                         id: 1,
                         key: 1,
@@ -78,7 +78,7 @@ export function useFamilyTreeWorkspace(
                         spouses: [],
                         parents: [],
                     }
-                ]);
+                ]);*/
             }
             setInitialDataLoaded(true);
         }

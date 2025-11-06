@@ -4,8 +4,8 @@ interface FamilyMember {
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';
-    birthYear?: number;
-    deathYear?: number;
+    birth_date?: string;
+    death_date?: string;
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
@@ -114,17 +114,29 @@ export default function TreeSearch({
         inputRef.current?.focus();
     };
 
-    // Get member display info
+    // Mostrar fechas completas si existen
+    const formatDate = (dateStr?: string) => {
+        if (!dateStr) return '?';
+        const [year, month, day] = dateStr.split('-');
+        if (year && month && day) {
+            return `${day}/${month}/${year}`;
+        } else if (year && month) {
+            return `${month}/${year}`;
+        } else if (year) {
+            return `${year}`;
+        }
+        return '?';
+    };
+
     const getMemberDisplayInfo = (member: FamilyMember) => {
-        const birthYear = member.birthYear ? `${member.birthYear}` : '?';
-        const deathYear = member.deathYear ? `${member.deathYear}` : 'presente';
+        const birth = formatDate(member.birth_date);
+        const death = member.death_date ? formatDate(member.death_date) : 'presente';
         const genderIcon = member.gender === 'M' ? '♂' : member.gender === 'F' ? '♀' : '⚪';
-        
         return {
-            birthYear,
-            deathYear,
+            birth,
+            death,
             genderIcon,
-            yearRange: `${birthYear} - ${deathYear}`
+            dateRange: `${birth} - ${death}`
         };
     };
 
@@ -173,7 +185,7 @@ export default function TreeSearch({
             {isOpen && filteredMembers.length > 0 && (
                 <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-64 overflow-y-auto">
                     {filteredMembers.map((member, index) => {
-                        const { yearRange, genderIcon } = getMemberDisplayInfo(member);
+                        const { dateRange, genderIcon } = getMemberDisplayInfo(member);
                         const isHighlighted = index === highlightedIndex;
                         
                         return (
@@ -200,7 +212,7 @@ export default function TreeSearch({
                                                     {member.name}
                                                 </span>
                                                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                    {yearRange}
+                                                    {dateRange}
                                                 </span>
                                             </div>
                                         </div>

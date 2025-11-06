@@ -13,8 +13,8 @@ class FamilyTreeNode extends Model
         'node_key',
         'name',
         'gender',
-        'birth_year',
-        'death_year',
+        'birth_date',
+        'death_date',
         'img',
         'node_data',
         'position'
@@ -23,8 +23,8 @@ class FamilyTreeNode extends Model
     protected $casts = [
         'node_data' => 'array',
         'position' => 'array',
-        'birth_year' => 'integer',
-        'death_year' => 'integer'
+        'birth_date' => 'string',
+        'death_date' => 'string'
     ];
 
     /**

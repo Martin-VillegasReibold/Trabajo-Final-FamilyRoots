@@ -30,7 +30,7 @@ export default function TreeSelector({
                             <button
                                 key={tree.id}
                                 onClick={() => onTreeSelect(tree.id)}
-                                className="w-full p-4 text-left rounded-lg border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-emerald-900/20"
+                                className="w-full p-4 text-left rounded-lg border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-emerald-900/20 cursor-pointer"
                             >
                                 <div className="flex justify-between items-center">
                                     <div>
@@ -76,21 +76,21 @@ export default function TreeSelector({
                         <Button 
                             onClick={onStartQuiz}
                             disabled={loading}
-                            className="inline-flex items-center rounded-md bg-emerald-600 px-6 py-3 text-base font-medium text-white hover:bg-emerald-700 disabled:opacity-50 shadow-md"
+                            className="inline-flex items-center rounded-md bg-emerald-600 px-6 py-3 text-base font-medium text-white hover:bg-emerald-700 disabled:opacity-50 shadow-md cursor-pointer"
                         >
                             {loading ? 'Generando Quiz...' : 'Comenzar Quiz'}
                         </Button>
                         <Button 
                             onClick={() => onTreeSelect(null)}
                             variant="outline"
-                            className="inline-flex items-center rounded-md border bg-white px-6 py-3 text-base font-medium text-emerald-800 hover:bg-emerald-50 shadow-md"
+                            className="inline-flex items-center rounded-md border bg-white px-6 py-3 text-base font-medium text-emerald-800 hover:bg-emerald-50 shadow-md cursor-pointer"
                         >
                             Cambiar Árbol
                         </Button>
                         <Button 
                             onClick={() => router.visit('/arboles')}
                             variant="outline"
-                            className="inline-flex items-center rounded-md border bg-white px-6 py-3 text-base font-medium text-emerald-800 hover:bg-emerald-50 shadow-md"
+                            className="inline-flex items-center rounded-md border bg-white px-6 py-3 text-base font-medium text-emerald-800 hover:bg-emerald-50 shadow-md cursor-pointer"
                         >
                             Ver mis árboles
                         </Button>

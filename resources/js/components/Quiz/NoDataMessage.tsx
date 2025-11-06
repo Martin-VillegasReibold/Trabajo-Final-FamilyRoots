@@ -37,14 +37,14 @@ export default function NoDataMessage({ userTrees }: Props) {
                     <div className="flex flex-wrap gap-3 justify-center">
                         <Button 
                             onClick={() => router.visit('/arboles')}
-                            className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+                            className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 cursor-pointer"
                         >
                             Ir a Árboles Genealógicos
                         </Button>
                         <Button 
                             onClick={() => router.visit('/crear-arbol')}
                             variant="outline"
-                            className="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50"
+                            className="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50 cursor-pointer"
                         >
                             Crear Nuevo Árbol
                         </Button>

@@ -6,8 +6,8 @@ interface FamilyMember {
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';
-    birthYear?: number;
-    deathYear?: number;
+    birth_date?: string;
+    death_date?: string;
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
@@ -18,7 +18,8 @@ interface FamilyMember {
 interface NewMember {
     name: string;
     gender: 'M' | 'F' | 'Other';
-    birthYear: number | undefined;
+    birth_date?: string;
+    death_date?: string;
     img: string;
 }
 
@@ -108,14 +109,24 @@ export default function AddMemberModal({
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Año de nacimiento
+                            Fecha de nacimiento
                         </label>
                         <input
-                            type="number"
-                            value={newMember.birthYear || ''}
-                            onChange={(e) => setNewMember(prev => ({ ...prev, birthYear: e.target.value ? parseInt(e.target.value) : undefined }))}
+                            type="date"
+                            value={newMember.birth_date || ''}
+                            onChange={(e) => setNewMember(prev => ({ ...prev, birth_date: e.target.value }))}
                             className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-                            placeholder="Ej: 1990"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Fecha de fallecimiento
+                        </label>
+                        <input
+                            type="date"
+                            value={newMember.death_date || ''}
+                            onChange={(e) => setNewMember(prev => ({ ...prev, death_date: e.target.value }))}
+                            className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-gray-100"
                         />
                     </div>
 

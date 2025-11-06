@@ -125,7 +125,7 @@ export default function MisFotos(props: MisFotosPageProps) {
                     </h1>
                     <div className="flex items-center gap-2">
                         <button
-                            className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 transition"
+                            className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 transition cursor-pointer"
                             onClick={() => fileInputRef.current?.click()}
                             aria-label="Subir nueva foto"
                             disabled={uploading}
@@ -180,7 +180,7 @@ export default function MisFotos(props: MisFotosPageProps) {
                                 />
                                 {foto.id && (
                                     <button
-                                        className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                        className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
                                         title="Eliminar foto"
                                         onClick={() => handleDelete(foto.id)}
                                     >
@@ -213,13 +213,13 @@ export default function MisFotos(props: MisFotosPageProps) {
                             />
                             <div className="flex gap-2 justify-end">
                                 <button
-                                    className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                    className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer"
                                     onClick={handleCancelNombre}
                                 >
                                     Cancelar
                                 </button>
                                 <button
-                                    className="px-3 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50"
+                                    className="px-3 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
                                     onClick={handleConfirmNombre}
                                     disabled={!nombreFoto.trim() || uploading}
                                 >

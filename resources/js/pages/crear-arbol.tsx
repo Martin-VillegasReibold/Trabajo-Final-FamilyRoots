@@ -145,7 +145,7 @@ export default function CreateTree() {
                                 className={`w-full py-3 px-6 rounded-xl font-semibold text-base transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-200 focus:ring-offset-2 transform hover:scale-[1.02] ${
                                     processing || data.name.trim().length < 3
                                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-sm'
-                                        : 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 shadow-lg hover:shadow-xl'
+                                        : 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 shadow-lg hover:shadow-xl cursor-pointer'
                                 }`}
                                 aria-describedby="button-status"
                             >

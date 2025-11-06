@@ -351,13 +351,13 @@ export default function Calendar({ calendars, flash }: Props) {
                                         type="button" 
                                         variant="outline" 
                                         onClick={handleCloseDialog}
-                                        className="flex-1"
+                                        className="flex-1 cursor-pointer"
                                     >
                                         Cancelar
                                     </Button>
                                     <Button 
                                         type="submit" 
-                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-200"
+                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-200 cursor-pointer"
                                     >
                                         Crear Evento
                                     </Button>

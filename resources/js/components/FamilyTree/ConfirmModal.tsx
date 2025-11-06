@@ -28,8 +28,8 @@ export default function ConfirmModal({ open, title, description, onConfirm, onCa
                 {description && <p id="confirm-desc" className="mt-2 text-sm text-gray-600 dark:text-gray-300">{description}</p>}
 
                 <div className="mt-4 flex justify-end gap-2">
-                    <button ref={cancelRef} onClick={onCancel} className="rounded border px-3 py-2 text-sm">Cancelar</button>
-                    <button ref={confirmRef} onClick={onConfirm} className="rounded bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700">Confirmar</button>
+                    <button ref={cancelRef} onClick={onCancel} className="rounded border px-3 py-2 text-sm cursor-pointer">Cancelar</button>
+                    <button ref={confirmRef} onClick={onConfirm} className="rounded bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700 cursor-pointer">Confirmar</button>
                 </div>
             </div>
         </div>

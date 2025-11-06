@@ -142,8 +142,8 @@ class FamilyTreeController extends Controller
                     [
                         'name' => $nodeData['name'],
                         'gender' => $nodeData['gender'] ?? 'M',
-                        'birth_year' => $nodeData['birthYear'] ?? null,
-                        'death_year' => $nodeData['deathYear'] ?? null,
+                        'birth_date' => $nodeData['birth_date'] ?? null,
+                        'death_date' => $nodeData['death_date'] ?? null,
                         'img' => $nodeData['img'] ?? null,
                         'node_data' => $nodeData,
                         'position' => $nodeData['loc'] ?? null,
@@ -207,8 +207,8 @@ class FamilyTreeController extends Controller
             'node_key' => $request->key,
             'name' => $request->name,
             'gender' => $request->gender ?? 'M',
-            'birth_year' => $request->birthYear,
-            'death_year' => $request->deathYear,
+            'birth_date' => $request->birth_date,
+            'death_date' => $request->death_date,
             'img' => $request->img,
             'node_data' => $request->all()
         ]);
@@ -237,8 +237,8 @@ class FamilyTreeController extends Controller
         $node->update([
             'name' => $request->name ?? $node->name,
             'gender' => $request->gender ?? $node->gender,
-            'birth_year' => $request->birthYear ?? $node->birth_year,
-            'death_year' => $request->deathYear ?? $node->death_year,
+            'birth_date' => $request->birth_date ?? $node->birth_date,
+            'death_date' => $request->death_date ?? $node->death_date,
             'img' => $request->img ?? $node->img,
             'node_data' => array_merge($node->node_data ?? [], $request->all())
         ]);

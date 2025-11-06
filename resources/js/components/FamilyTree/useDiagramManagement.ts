@@ -110,7 +110,8 @@ export function useDiagramManagement(
                     switch (data.gender) {
                         case 'M': return '#E3F2FD'; // Light blue for male
                         case 'F': return '#FCE4EC'; // Light pink for female
-                        default: return '#F3E5F5'; // Light purple for other
+                        case 'Other': return '#F3F4F6'; // Light gray for other
+                        default: return '#F3E5F5'; // Light purple fallback
                     }
                 }),
                 new go.Binding('stroke', '', (data) => data.isMarriageNode ? '#F59E0B' : '#E6F4EA'),
@@ -150,10 +151,12 @@ export function useDiagramManagement(
                     new go.Binding('text', '', (data) => {
                         if (data.isMarriageNode) return '';
                         let years = '';
-                        if (data.birthYear) {
-                            years = data.birthYear.toString();
-                            if (data.deathYear) {
-                                years += ` - ${data.deathYear}`;
+                        if (data.birth_date) {
+                            const birthYear = data.birth_date.split('-')[0];
+                            years = birthYear;
+                            if (data.death_date) {
+                                const deathYear = data.death_date.split('-')[0];
+                                years += ` - ${deathYear}`;
                             }
                         }
                         return years;
@@ -383,8 +386,8 @@ export function buildModel(
             key: member.key,
             name: member.name,
             gender: member.gender || 'Other',
-            birthYear: member.birthYear,
-            deathYear: member.deathYear,
+            birth_date: member.birth_date,
+            death_date: member.death_date,
             img: member.img || '/imagenes/logo Arbol.png',
             spouses: member.spouses || [],
             parents: member.parents || [],

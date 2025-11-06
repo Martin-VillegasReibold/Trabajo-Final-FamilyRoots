@@ -5,8 +5,8 @@ export interface FamilyMember {
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';
-    birthYear?: number;
-    deathYear?: number;
+    birth_date?: string;
+    death_date?: string;
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
@@ -23,12 +23,14 @@ export function useFamilyMemberManagement(
     const [newMember, setNewMember] = useState<{
         name: string;
         gender: 'M' | 'F' | 'Other';
-        birthYear: number | undefined;
+        birth_date?: string;
+        death_date?: string;
         img: string;
     }>({
         name: '',
         gender: 'M',
-        birthYear: undefined,
+        birth_date: '',
+        death_date: '',
         img: '/imagenes/logo Arbol.png'
     });
 
@@ -56,7 +58,8 @@ export function useFamilyMemberManagement(
             key: newKey,
             name: newMember.name,
             gender: newMember.gender,
-            birthYear: newMember.birthYear,
+            birth_date: newMember.birth_date,
+            death_date: newMember.death_date,
             img: newMember.img,
             spouses: [],
             parents: []
@@ -96,7 +99,7 @@ export function useFamilyMemberManagement(
         }
 
         onDataChange?.(updatedMembers);
-        setNewMember({ name: '', gender: 'M', birthYear: undefined, img: '/imagenes/logo Arbol.png' });
+    setNewMember({ name: '', gender: 'M', birth_date: undefined, img: '/imagenes/logo Arbol.png' });
         setShowAddModal(false);
     };
 

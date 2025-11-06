@@ -75,7 +75,7 @@ export default function QuizGame({
                         <button
                             key={index}
                             onClick={() => onAnswerSelect(index)}
-                            className={`w-full p-2 text-left rounded-lg border transition-all hover:shadow-lg focus:ring-2 focus:ring-emerald-200 focus:outline-none ${
+                            className={`w-full p-2 text-left rounded-lg border transition-all hover:shadow-lg focus:ring-2 focus:ring-emerald-200 focus:outline-none cursor-pointer ${
                                 userAnswers[currentQuestion] === index
                                     ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
                                     : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-emerald-300'
@@ -97,14 +97,14 @@ export default function QuizGame({
                         variant="outline"
                         onClick={onPreviousQuestion}
                         disabled={currentQuestion === 0}
-                        className="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50 md:text-base disabled:opacity-50"
+                        className="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50 md:text-base disabled:opacity-50 cursor-pointer"
                     >
                         Anterior
                     </Button>
                     <Button
                         onClick={onNextQuestion}
                         disabled={userAnswers[currentQuestion] === undefined || loading}
-                        className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 md:text-base disabled:opacity-50"
+                        className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 md:text-base disabled:opacity-50 cursor-pointer"
                     >
                         {loading ? 'Procesando...' : (currentQuestion === quizData.length - 1 ? 'Finalizar' : 'Siguiente')}
                     </Button>

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('node_key')->index(); // Clave única del nodo en GoJS
             $table->string('name');
             $table->string('gender')->default('M');
-            $table->integer('birth_year')->nullable();
-            $table->integer('death_year')->nullable();
+            $table->string('birth_date')->nullable(); // yyyy-MM-dd o solo yyyy
+            $table->string('death_date')->nullable(); // yyyy-MM-dd o solo yyyy
             $table->string('img')->nullable();
             $table->json('node_data')->nullable(); // Datos completos del nodo GoJS
             $table->json('position')->nullable(); // Posición X,Y del nodo

@@ -1,11 +1,5 @@
 import CommentSection from '@/components/CommentSection';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+// ...otros imports necesarios...
 import useCommentsStatus from '@/hooks/useCommentStatus';
 import { router } from '@inertiajs/react';
 import React, { useState } from 'react';
@@ -18,8 +12,8 @@ interface FamilyMember {
     key: number | string;
     name: string;
     gender?: 'M' | 'F' | 'Other';
-    birthYear?: number;
-    deathYear?: number;
+    birth_date?: string;
+    death_date?: string;
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
@@ -72,49 +66,6 @@ export default function Inspector({
         } finally {
             setLoadingPhotos(false);
         }
-    };
-    const [rememberType, setRememberType] = useState<'birth' | 'death' | null>(
-        null,
-    );
-    const [rememberDay, setRememberDay] = useState('');
-    const [rememberMonth, setRememberMonth] = useState('');
-    const [isRememberOpen, setIsRememberOpen] = useState(false);
-
-    const openRememberModal = (type: 'birth' | 'death') => {
-        setRememberType(type);
-        setIsRememberOpen(true);
-    };
-
-    const handleRememberSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!selected || !rememberType) return;
-        if (!rememberDay || !rememberMonth) return alert('Completa día y mes');
-        const title = `${rememberType === 'birth' ? 'Nacimiento' : 'Fallecimiento'} de ${selected.name}`;
-        const color = rememberType === 'birth' ? '#10b981' : '#ef4444';
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const inputMonth = parseInt(rememberMonth, 10);
-        const inputDay = parseInt(rememberDay, 10);
-        // Si la fecha ya pasó este año, usar el próximo año
-        let eventYear = currentYear;
-        if (
-            inputMonth < now.getMonth() + 1 ||
-            (inputMonth === now.getMonth() + 1 && inputDay < now.getDate())
-        ) {
-            eventYear = currentYear + 1;
-        }
-        const dateStr = `${eventYear}-${rememberMonth.padStart(2, '0')}-${rememberDay.padStart(2, '0')}`;
-        router.post('/calendario', {
-            _method: 'post',
-            title,
-            startdate: dateStr,
-            enddate: dateStr,
-            color,
-        });
-        setIsRememberOpen(false);
-        setRememberDay('');
-        setRememberMonth('');
-        setRememberType(null);
     };
 
     return (
@@ -188,60 +139,6 @@ export default function Inspector({
                 {activeTab === 'panel' &&
                     (selected ? (
                         <div className="space-y-4">
-                            {/* Modal para día y mes */}
-                            <Dialog
-                                open={isRememberOpen}
-                                onOpenChange={setIsRememberOpen}
-                            >
-                                <DialogContent className="sm:max-w-md">
-                                    <DialogHeader>
-                                        <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                                            {rememberType === 'birth'
-                                                ? 'Recordar nacimiento'
-                                                : 'Recordar fallecimiento'}
-                                        </DialogTitle>
-                                    </DialogHeader>
-                                    <form
-                                        onSubmit={handleRememberSubmit}
-                                        className="space-y-4"
-                                    >
-                                        <div className="flex gap-2">
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                max="31"
-                                                placeholder="Día"
-                                                value={rememberDay}
-                                                onChange={(e) =>
-                                                    setRememberDay(
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                required
-                                            />
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                max="12"
-                                                placeholder="Mes"
-                                                value={rememberMonth}
-                                                onChange={(e) =>
-                                                    setRememberMonth(
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                required
-                                            />
-                                        </div>
-                                        <button
-                                            type="submit"
-                                            className="w-full rounded bg-emerald-600 py-2 text-white hover:bg-emerald-700"
-                                        >
-                                            Agregar al calendario
-                                        </button>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
                             {selected.isMarriageNode ? (
                                 /* Enhanced Marriage Node Panel */
                                 <div className="space-y-4">
@@ -281,7 +178,7 @@ export default function Inspector({
                                                 setAddRelationType('child');
                                                 setShowAddModal(true);
                                             }}
-                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
                                             aria-label="Agregar hijo a la pareja"
                                         >
                                             <svg
@@ -385,80 +282,92 @@ export default function Inspector({
                                         <div className="grid grid-cols-2 gap-3">
                                             <div>
                                                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                    Año nacimiento
+                                                    Fecha nacimiento
                                                 </label>
                                                 <input
-                                                    type="number"
-                                                    value={
-                                                        selected.birthYear || ''
-                                                    }
+                                                    type="date"
+                                                    value={selected.birth_date || ''}
                                                     onChange={(e) =>
                                                         updateSelectedMember({
-                                                            birthYear: e.target
-                                                                .value
-                                                                ? parseInt(
-                                                                      e.target
-                                                                          .value,
-                                                                  )
-                                                                : undefined,
+                                                            birth_date: e.target.value || undefined,
                                                         })
                                                     }
                                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                                                    placeholder="1990"
-                                                    min="1900"
-                                                    max={new Date().getFullYear()}
+                                                    placeholder="YYYY-MM-DD"
+                                                    max={new Date().toISOString().split('T')[0]}
                                                 />
                                             </div>
 
                                             <div>
                                                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                    Año fallecimiento
+                                                    Fecha fallecimiento
                                                 </label>
                                                 <input
-                                                    type="number"
-                                                    value={
-                                                        selected.deathYear || ''
-                                                    }
+                                                    type="date"
+                                                    value={selected.death_date || ''}
                                                     onChange={(e) =>
                                                         updateSelectedMember({
-                                                            deathYear: e.target
-                                                                .value
-                                                                ? parseInt(
-                                                                      e.target
-                                                                          .value,
-                                                                  )
-                                                                : undefined,
+                                                            death_date: e.target.value || undefined,
                                                         })
                                                     }
                                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                                                    placeholder="Opcional"
-                                                    min="1900"
-                                                    max={new Date().getFullYear()}
+                                                    placeholder="YYYY-MM-DD"
+                                                    max={new Date().toISOString().split('T')[0]}
                                                 />
                                             </div>
                                         </div>
                                         {/* Botón Recordar fechas */}
                                         <div className="grid grid-cols-2 gap-3">
-                                            {selected.birthYear && (
+                                            {selected.birth_date && (
                                                 <button
-                                                    className="rounded bg-emerald-500 px-3 py-1 text-xs text-white hover:bg-emerald-600"
-                                                    onClick={() =>
-                                                        openRememberModal(
-                                                            'birth',
-                                                        )
-                                                    }
+                                                    className="rounded bg-emerald-500 px-3 py-1 text-xs text-white hover:bg-emerald-600 cursor-pointer"
+                                                    onClick={() => {
+                                                        if (!selected.birth_date) return;
+                                                        const [, month = '01', day = '01'] = selected.birth_date.split('-');
+                                                        const title = `Nacimiento de ${selected.name}`;
+                                                        const color = '#10b981';
+                                                        const now = new Date();
+                                                        let eventYear = now.getFullYear();
+                                                        const eventDate = new Date(`${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                                        if (eventDate < now) {
+                                                            eventYear++;
+                                                        }
+                                                        const dateStr = `${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                                                        router.post('/calendario', {
+                                                            _method: 'post',
+                                                            title,
+                                                            startdate: dateStr,
+                                                            enddate: dateStr,
+                                                            color,
+                                                        });
+                                                    }}
                                                 >
                                                     Recordar nacimiento
                                                 </button>
                                             )}
-                                            {selected.deathYear && (
+                                            {selected.death_date && (
                                                 <button
-                                                    className="rounded bg-rose-500 px-3 py-1 text-xs text-white hover:bg-rose-600"
-                                                    onClick={() =>
-                                                        openRememberModal(
-                                                            'death',
-                                                        )
-                                                    }
+                                                    className="rounded bg-rose-500 px-3 py-1 text-xs text-white hover:bg-rose-600 cursor-pointer"
+                                                    onClick={() => {
+                                                        if (!selected.death_date) return;
+                                                        const [, month = '01', day = '01'] = selected.death_date.split('-');
+                                                        const title = `Fallecimiento de ${selected.name}`;
+                                                        const color = '#ef4444';
+                                                        const now = new Date();
+                                                        let eventYear = now.getFullYear();
+                                                        const eventDate = new Date(`${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                                        if (eventDate < now) {
+                                                            eventYear++;
+                                                        }
+                                                        const dateStr = `${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                                                        router.post('/calendario', {
+                                                            _method: 'post',
+                                                            title,
+                                                            startdate: dateStr,
+                                                            enddate: dateStr,
+                                                            color,
+                                                        });
+                                                    }}
                                                 >
                                                     Recordar fallecimiento
                                                 </button>
@@ -481,7 +390,7 @@ export default function Inspector({
                                                 />
                                                 <button
                                                     type="button"
-                                                    className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800"
+                                                    className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800 cursor-pointer"
                                                     onClick={openPhotosModal}
                                                     title="Elegir de Mis Fotos"
                                                 >
@@ -534,7 +443,7 @@ export default function Inspector({
                                                 onClick={() =>
                                                     setShowAddModal(true)
                                                 }
-                                                className="flex items-center gap-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                                className="flex items-center gap-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
                                                 aria-label={`Agregar ${addRelationType}`}
                                             >
                                                 <svg
@@ -558,7 +467,7 @@ export default function Inspector({
                                             onClick={() =>
                                                 setShowDeleteModal(true)
                                             }
-                                            className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:outline-none dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900/20"
+                                            className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:outline-none dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900/20 cursor-pointer"
                                             aria-label={`Eliminar ${selected.name}`}
                                         >
                                             <svg
@@ -677,7 +586,7 @@ export default function Inspector({
                                     } as FamilyMember);
                                     setShowAddModal(true);
                                 }}
-                                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
                             >
                                 <svg
                                     className="h-4 w-4"
