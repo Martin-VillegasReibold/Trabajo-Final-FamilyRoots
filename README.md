@@ -44,3 +44,9 @@ Con esta herramienta se facilita la construcción colaborativa de un legado fami
 - Recordar evento
 - Empezar juego
 - Agregar etiqueta
+### Funcionalidades implementadas en cuarta entrega(Sprint 4)
+- Invitar usuarios
+- Visualizar Estadisticas
+- Exportar arbol
+
+
