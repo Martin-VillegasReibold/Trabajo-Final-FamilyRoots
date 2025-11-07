@@ -11,6 +11,16 @@ interface FamilyMember {
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
+    birth_place?: {
+        country?: string;
+        state?: string;
+        city?: string;
+    };
+    death_place?: {
+        country?: string;
+        state?: string;
+        city?: string;
+    };
 }
 
 interface TreeData {
@@ -99,10 +109,10 @@ export function useFamilyTreeWorkspace(
         let attempts = 0;
         const maxAttempts = 2;
 
+
         while (attempts < maxAttempts) {
             try {
                 const csrfToken = getCsrfToken();
-                
                 if (!csrfToken) {
                     throw new Error('Token CSRF no encontrado. Por favor, recarga la página.');
                 }
@@ -110,7 +120,17 @@ export function useFamilyTreeWorkspace(
                 // Generar enlaces a partir de las relaciones en los nodos
                 const links: { from: string | number; to: string | number; relationship: string }[] = [];
                 
-                familyMembers.forEach(member => {
+                const transformedMembers = familyMembers.map(member => ({
+                    ...member,
+                    birth_country: member.birth_place?.country || '',
+                    birth_state: member.birth_place?.state || '',
+                    birth_city: member.birth_place?.city || '',
+                    death_country: member.death_place?.country || '',
+                    death_state: member.death_place?.state || '',
+                    death_city: member.death_place?.city || '',
+                }));
+
+                transformedMembers.forEach(member => {
                     // Enlaces de padres a hijos
                     if (member.parents && Array.isArray(member.parents)) {
                         member.parents.forEach(parentKey => {
@@ -121,11 +141,9 @@ export function useFamilyTreeWorkspace(
                             });
                         });
                     }
-                    
                     // Enlaces de cónyuges
                     if (member.spouses && Array.isArray(member.spouses)) {
                         member.spouses.forEach(spouseKey => {
-                            // Evitar enlaces duplicados (solo agregar si from < to)
                             if (member.key < spouseKey) {
                                 links.push({
                                     from: member.key,
@@ -138,7 +156,7 @@ export function useFamilyTreeWorkspace(
                 });
 
                 const data = {
-                    nodes: familyMembers,
+                    nodes: transformedMembers,
                     links: links
                 };
 

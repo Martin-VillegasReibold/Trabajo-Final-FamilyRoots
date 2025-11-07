@@ -188,7 +188,7 @@ export default function Arboles() {
                                         className="block focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 rounded-lg cursor-pointer"
                                         aria-describedby={`tree-description-${a.id}`}
                                     >
-                                        <div className="mb-4 transform group-hover:scale-[1.02] transition-transform duration-200" aria-hidden="true">
+                                        <div className="mb-4 transform group-hover:scale-[1.02] transition-transform duration-200">
                                             <TreeOverview arbolId={a.id} />
                                         </div>
                                         <div className="text-center mb-4">

@@ -16,6 +16,13 @@ class FamilyTreeNode extends Model
         'birth_date',
         'death_date',
         'img',
+        'birth_country',
+        'birth_state',
+        'birth_city',
+        'death_country',
+        'death_state',
+        'death_city',
+        'nationality',
         'node_data',
         'position'
     ];
@@ -24,7 +31,8 @@ class FamilyTreeNode extends Model
         'node_data' => 'array',
         'position' => 'array',
         'birth_date' => 'string',
-        'death_date' => 'string'
+        'death_date' => 'string',
+        'nationality' => 'array'
     ];
 
     /**

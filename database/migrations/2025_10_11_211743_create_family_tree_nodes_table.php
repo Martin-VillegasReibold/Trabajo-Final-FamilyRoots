@@ -20,6 +20,15 @@ return new class extends Migration
             $table->string('birth_date')->nullable(); // yyyy-MM-dd o solo yyyy
             $table->string('death_date')->nullable(); // yyyy-MM-dd o solo yyyy
             $table->string('img')->nullable();
+            // Campos para lugar de nacimiento
+            $table->string('birth_country')->nullable();
+            $table->string('birth_state')->nullable();
+            $table->string('birth_city')->nullable();
+            // Campos para lugar de fallecimiento
+            $table->string('death_country')->nullable();
+            $table->string('death_state')->nullable();
+            $table->string('death_city')->nullable();
+            
             $table->json('node_data')->nullable(); // Datos completos del nodo GoJS
             $table->json('position')->nullable(); // Posición X,Y del nodo
             $table->timestamps();

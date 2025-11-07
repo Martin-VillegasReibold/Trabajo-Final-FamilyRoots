@@ -145,6 +145,13 @@ class FamilyTreeController extends Controller
                         'birth_date' => $nodeData['birth_date'] ?? null,
                         'death_date' => $nodeData['death_date'] ?? null,
                         'img' => $nodeData['img'] ?? null,
+                        'birth_country' => $nodeData['birth_place']['country'] ?? null,
+                        'birth_state' => $nodeData['birth_place']['state'] ?? null,
+                        'birth_city' => $nodeData['birth_place']['city'] ?? null,
+                        'death_country' => $nodeData['death_place']['country'] ?? null,
+                        'death_state' => $nodeData['death_place']['state'] ?? null,
+                        'death_city' => $nodeData['death_place']['city'] ?? null,
+                        'nationality' => $nodeData['nationality'] ?? null,
                         'node_data' => $nodeData,
                         'position' => $nodeData['loc'] ?? null,
                     ]
@@ -210,6 +217,12 @@ class FamilyTreeController extends Controller
             'birth_date' => $request->birth_date,
             'death_date' => $request->death_date,
             'img' => $request->img,
+            'birth_country' => $request->input('birth_place.country'),
+            'birth_state' => $request->input('birth_place.state'),
+            'birth_city' => $request->input('birth_place.city'),
+            'death_country' => $request->input('death_place.country'),
+            'death_state' => $request->input('death_place.state'),
+            'death_city' => $request->input('death_place.city'),
             'node_data' => $request->all()
         ]);
 

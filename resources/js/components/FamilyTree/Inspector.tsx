@@ -2,10 +2,12 @@ import CommentSection from '@/components/CommentSection';
 // ...otros imports necesarios...
 import useCommentsStatus from '@/hooks/useCommentStatus';
 import { router } from '@inertiajs/react';
-import React, { useState } from 'react';
-import UserPhotosModal, { UserPhoto } from './UserPhotosModal';
 import axios from 'axios';
+import { useState } from 'react';
 import TagSelector from '../TagSelector';
+import PlaceLocation from './PlaceLocation';
+import UserPhotosModal, { UserPhoto } from './UserPhotosModal';
+import Nationality, { type NationalityValue } from './Nationality';
 
 interface FamilyMember {
     id?: number | string;
@@ -19,6 +21,17 @@ interface FamilyMember {
     parents?: (number | string)[];
     isMarriageNode?: boolean;
     spouseKeys?: (number | string)[];
+    birth_place?: {
+        country?: string;
+        state?: string;
+        city?: string;
+    };
+    death_place?: {
+        country?: string;
+        state?: string;
+        city?: string;
+    };
+    nationality?: NationalityValue;
 }
 
 interface InspectorProps {
@@ -178,7 +191,7 @@ export default function Inspector({
                                                 setAddRelationType('child');
                                                 setShowAddModal(true);
                                             }}
-                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                                             aria-label="Agregar hijo a la pareja"
                                         >
                                             <svg
@@ -286,15 +299,25 @@ export default function Inspector({
                                                 </label>
                                                 <input
                                                     type="date"
-                                                    value={selected.birth_date || ''}
+                                                    value={
+                                                        selected.birth_date ||
+                                                        ''
+                                                    }
                                                     onChange={(e) =>
                                                         updateSelectedMember({
-                                                            birth_date: e.target.value || undefined,
+                                                            birth_date:
+                                                                e.target
+                                                                    .value ||
+                                                                undefined,
                                                         })
                                                     }
                                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                                                     placeholder="YYYY-MM-DD"
-                                                    max={new Date().toISOString().split('T')[0]}
+                                                    max={
+                                                        new Date()
+                                                            .toISOString()
+                                                            .split('T')[0]
+                                                    }
                                                 />
                                             </div>
 
@@ -304,15 +327,25 @@ export default function Inspector({
                                                 </label>
                                                 <input
                                                     type="date"
-                                                    value={selected.death_date || ''}
+                                                    value={
+                                                        selected.death_date ||
+                                                        ''
+                                                    }
                                                     onChange={(e) =>
                                                         updateSelectedMember({
-                                                            death_date: e.target.value || undefined,
+                                                            death_date:
+                                                                e.target
+                                                                    .value ||
+                                                                undefined,
                                                         })
                                                     }
                                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                                                     placeholder="YYYY-MM-DD"
-                                                    max={new Date().toISOString().split('T')[0]}
+                                                    max={
+                                                        new Date()
+                                                            .toISOString()
+                                                            .split('T')[0]
+                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -320,64 +353,145 @@ export default function Inspector({
                                         <div className="grid grid-cols-2 gap-3">
                                             {selected.birth_date && (
                                                 <button
-                                                    className="rounded bg-emerald-500 px-3 py-1 text-xs text-white hover:bg-emerald-600 cursor-pointer"
+                                                    className="cursor-pointer rounded bg-emerald-500 px-3 py-1 text-xs text-white hover:bg-emerald-600"
                                                     onClick={() => {
-                                                        if (!selected.birth_date) return;
-                                                        const [, month = '01', day = '01'] = selected.birth_date.split('-');
+                                                        if (
+                                                            !selected.birth_date
+                                                        )
+                                                            return;
+                                                        const [
+                                                            ,
+                                                            month = '01',
+                                                            day = '01',
+                                                        ] =
+                                                            selected.birth_date.split(
+                                                                '-',
+                                                            );
                                                         const title = `Nacimiento de ${selected.name}`;
                                                         const color = '#10b981';
                                                         const now = new Date();
-                                                        let eventYear = now.getFullYear();
-                                                        const eventDate = new Date(`${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                                        let eventYear =
+                                                            now.getFullYear();
+                                                        const eventDate =
+                                                            new Date(
+                                                                `${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
+                                                            );
                                                         if (eventDate < now) {
                                                             eventYear++;
                                                         }
                                                         const dateStr = `${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                                                        router.post('/calendario', {
-                                                            _method: 'post',
-                                                            title,
-                                                            startdate: dateStr,
-                                                            enddate: dateStr,
-                                                            color,
-                                                        });
+                                                        router.post(
+                                                            '/calendario',
+                                                            {
+                                                                _method: 'post',
+                                                                title,
+                                                                startdate:
+                                                                    dateStr,
+                                                                enddate:
+                                                                    dateStr,
+                                                                color,
+                                                            },
+                                                        );
                                                     }}
                                                 >
                                                     Recordar nacimiento
                                                 </button>
                                             )}
+
                                             {selected.death_date && (
                                                 <button
-                                                    className="rounded bg-rose-500 px-3 py-1 text-xs text-white hover:bg-rose-600 cursor-pointer"
+                                                    className="cursor-pointer rounded bg-rose-500 px-3 py-1 text-xs text-white hover:bg-rose-600"
                                                     onClick={() => {
-                                                        if (!selected.death_date) return;
-                                                        const [, month = '01', day = '01'] = selected.death_date.split('-');
+                                                        if (
+                                                            !selected.death_date
+                                                        )
+                                                            return;
+                                                        const [
+                                                            ,
+                                                            month = '01',
+                                                            day = '01',
+                                                        ] =
+                                                            selected.death_date.split(
+                                                                '-',
+                                                            );
                                                         const title = `Fallecimiento de ${selected.name}`;
                                                         const color = '#ef4444';
                                                         const now = new Date();
-                                                        let eventYear = now.getFullYear();
-                                                        const eventDate = new Date(`${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                                        let eventYear =
+                                                            now.getFullYear();
+                                                        const eventDate =
+                                                            new Date(
+                                                                `${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
+                                                            );
                                                         if (eventDate < now) {
                                                             eventYear++;
                                                         }
                                                         const dateStr = `${eventYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                                                        router.post('/calendario', {
-                                                            _method: 'post',
-                                                            title,
-                                                            startdate: dateStr,
-                                                            enddate: dateStr,
-                                                            color,
-                                                        });
+                                                        router.post(
+                                                            '/calendario',
+                                                            {
+                                                                _method: 'post',
+                                                                title,
+                                                                startdate:
+                                                                    dateStr,
+                                                                enddate:
+                                                                    dateStr,
+                                                                color,
+                                                            },
+                                                        );
                                                     }}
                                                 >
                                                     Recordar fallecimiento
                                                 </button>
                                             )}
                                         </div>
+
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <PlaceLocation
+                                                    label="Lugar de nacimiento"
+                                                    value={
+                                                        selected?.birth_place ||
+                                                        {}
+                                                    }
+                                                    onChange={(val) =>
+                                                        updateSelectedMember({
+                                                            birth_place: val,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+                                            <div>
+                                                <PlaceLocation
+                                                    label="Lugar de fallecimiento"
+                                                    value={
+                                                        selected?.death_place ||
+                                                        {}
+                                                    }
+                                                    onChange={(val) =>
+                                                        updateSelectedMember({
+                                                            death_place: val,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <Nationality
+                                                label="Nacionalidad/es"
+                                                value={selected?.nationality || { countries: [] }}
+                                                onChange={(val: NationalityValue) =>
+                                                    updateSelectedMember({ nationality: val })
+                                                }
+                                            />
+                                        </div>
+
                                         <div>
                                             <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Imagen (URL)
                                             </label>
-                                            <div className="flex gap-2 items-center">
+                                            <div className="flex items-center gap-2">
                                                 <input
                                                     value={selected.img || ''}
                                                     onChange={(e) =>
@@ -390,11 +504,23 @@ export default function Inspector({
                                                 />
                                                 <button
                                                     type="button"
-                                                    className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800 cursor-pointer"
+                                                    className="inline-flex cursor-pointer items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800"
                                                     onClick={openPhotosModal}
                                                     title="Elegir de Mis Fotos"
                                                 >
-                                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16V4a2 2 0 012-2h12a2 2 0 012 2v12M4 16l4-4a2 2 0 012.828 0l2.344 2.344a2 2 0 002.828 0L20 8M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4" /></svg>
+                                                    <svg
+                                                        className="h-4 w-4"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M4 16V4a2 2 0 012-2h12a2 2 0 012 2v12M4 16l4-4a2 2 0 012.828 0l2.344 2.344a2 2 0 002.828 0L20 8M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4"
+                                                        />
+                                                    </svg>
                                                     Mis Fotos
                                                 </button>
                                             </div>
@@ -402,14 +528,21 @@ export default function Inspector({
                                                 open={showPhotosModal}
                                                 photos={userPhotos}
                                                 onSelect={(url) => {
-                                                    updateSelectedMember({ img: url });
+                                                    updateSelectedMember({
+                                                        img: url,
+                                                    });
                                                     setShowPhotosModal(false);
                                                 }}
-                                                onClose={() => setShowPhotosModal(false)}
+                                                onClose={() =>
+                                                    setShowPhotosModal(false)
+                                                }
                                             />
-                                            {loadingPhotos && showPhotosModal && (
-                                                <div className="text-xs text-gray-400 mt-2">Cargando fotos...</div>
-                                            )}
+                                            {loadingPhotos &&
+                                                showPhotosModal && (
+                                                    <div className="mt-2 text-xs text-gray-400">
+                                                        Cargando fotos...
+                                                    </div>
+                                                )}
                                         </div>
                                     </div>
 
@@ -443,7 +576,7 @@ export default function Inspector({
                                                 onClick={() =>
                                                     setShowAddModal(true)
                                                 }
-                                                className="flex items-center gap-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                                                className="flex cursor-pointer items-center gap-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                                                 aria-label={`Agregar ${addRelationType}`}
                                             >
                                                 <svg
@@ -467,7 +600,7 @@ export default function Inspector({
                                             onClick={() =>
                                                 setShowDeleteModal(true)
                                             }
-                                            className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:outline-none dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900/20 cursor-pointer"
+                                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:outline-none dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900/20"
                                             aria-label={`Eliminar ${selected.name}`}
                                         >
                                             <svg
@@ -586,7 +719,7 @@ export default function Inspector({
                                     } as FamilyMember);
                                     setShowAddModal(true);
                                 }}
-                                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                             >
                                 <svg
                                     className="h-4 w-4"

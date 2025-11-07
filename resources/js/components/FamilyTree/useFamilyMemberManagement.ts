@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // Hook para gestionar los miembros de la familia y sus relaciones en general.
 export interface FamilyMember {
     id?: number | string; 
@@ -34,6 +34,21 @@ export function useFamilyMemberManagement(
         img: '/imagenes/logo Arbol.png'
     });
 
+    // Sincronizar el estado local 'selected' con el array global 'members' cada vez que 'members' cambie
+    // Si el miembro seleccionado existe en el nuevo array, actualiza sus datos locales
+    // Si no existe, lo deselecciona
+    useEffect(() => {
+        if (!selected) return;
+        // Mantener selección para nodos virtuales (ej. nodo de matrimonio) que no existen en members
+        if (selected.isMarriageNode) return;
+        const updated = members.find(m => m.key === selected.key);
+        if (updated) {
+            setSelected(updated);
+        } else {
+            setSelected(null);
+        }
+    }, [members, selected]);
+
     // Update member function
     const updateSelectedMember = (updates: Partial<FamilyMember>) => {
         if (!selected || selected.isMarriageNode) return;
@@ -50,7 +65,7 @@ export function useFamilyMemberManagement(
         addRelationType: 'child' | 'parent' | 'spouse',
         setShowAddModal: (show: boolean) => void
     ) => {
-        if (!newMember.name.trim() || !selected) return;
+        if (!newMember.name.trim()) return;
 
         const newKey = Date.now();
         const newMemberData: FamilyMember = {
@@ -65,37 +80,42 @@ export function useFamilyMemberManagement(
             parents: []
         };
 
-        // Asignar relaciones iniciales según tipo
-        switch (addRelationType) {
-            case 'child':
-                newMemberData.parents = selected.isMarriageNode ? selected.spouseKeys || [] : [selected.key];
-                break;
-            case 'spouse':
-                newMemberData.spouses = [selected.key];
-                break;
-            case 'parent':
-                break;
+        // Asignar relaciones iniciales según tipo (si hay seleccionado)
+        if (selected) {
+            switch (addRelationType) {
+                case 'child':
+                    newMemberData.parents = selected.isMarriageNode ? selected.spouseKeys || [] : [selected.key];
+                    break;
+                case 'spouse':
+                    newMemberData.spouses = [selected.key];
+                    break;
+                case 'parent':
+                    // se manejará actualizando el seleccionado abajo
+                    break;
+            }
         }
 
         // Construir array de miembros actualizado localmente
         let updatedMembers = [...members, newMemberData];
 
         // Actualizar relaciones de nodo seleccionado si aplica
-        switch (addRelationType) {
-            case 'spouse':
-                updatedMembers = updatedMembers.map(member =>
-                    member.key === selected.key
-                        ? { ...member, spouses: [...(member.spouses || []), newKey] }
-                        : member
-                );
-                break;
-            case 'parent':
-                updatedMembers = updatedMembers.map(member =>
-                    member.key === selected.key
-                        ? { ...member, parents: [...(member.parents || []), newKey] }
-                        : member
-                );
-                break;
+        if (selected) {
+            switch (addRelationType) {
+                case 'spouse':
+                    updatedMembers = updatedMembers.map(member =>
+                        member.key === selected.key
+                            ? { ...member, spouses: [...(member.spouses || []), newKey] }
+                            : member
+                    );
+                    break;
+                case 'parent':
+                    updatedMembers = updatedMembers.map(member =>
+                        member.key === selected.key
+                            ? { ...member, parents: [...(member.parents || []), newKey] }
+                            : member
+                    );
+                    break;
+            }
         }
 
         onDataChange?.(updatedMembers);
