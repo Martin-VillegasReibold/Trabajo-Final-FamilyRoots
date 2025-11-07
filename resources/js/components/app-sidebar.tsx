@@ -1,4 +1,4 @@
-//import { NavFooter } from '@/components/nav-footer';
+import { usePage, Link } from '@inertiajs/react';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -10,73 +10,53 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import { home } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
 import { Calendar, Users, Home, UploadIcon } from 'lucide-react';
 import AppLogo from './app-logo';
-import { TreePine, Plus  } from 'lucide-react';
-
+import { TreePine, Plus } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: Home,
-    },
-    {
-        title: 'Crear Árbol',
-        href: '/crear-arbol',
-        icon: Plus,
-    },
-    {
-        title: 'Mis Árboles',
-        href: '/arboles',
-        icon: TreePine,
-    },
-    {
-        title: 'Calendario',
-        href: '/calendario',
-        icon: Calendar,
-    },
-    {
-        title: 'Actividades',
-        href: '/actividades',
-        icon: Users,
-    },
-    {
-        title: 'Mis Fotos',
-        href: '/mis-fotos',
-        icon: UploadIcon,
-    },
+    { title: 'Dashboard', href: '/dashboard', icon: Home },
+    { title: 'Crear Árbol', href: '/crear-arbol', icon: Plus },
+    { title: 'Mis Árboles', href: '/arboles', icon: TreePine },
+    { title: 'Calendario', href: '/calendario', icon: Calendar },
+    { title: 'Actividades', href: '/actividades', icon: Users },
+    { title: 'Mis Fotos', href: '/mis-fotos', icon: UploadIcon },
 ];
 
-// const footerNavItems: NavItem[] = [
-//     {
-//         title: 'Repository',
-//         href: 'https://github.com/laravel/react-starter-kit',
-//         icon: Folder,
-//     },
-//     {
-//         title: 'Documentation',
-//         href: 'https://laravel.com/docs/starter-kits#react',
-//         icon: BookOpen,
-//     },
-// ];
-
+interface Arbol {
+    id: number;
+    name: string;
+    user_id: number;
+}
 export function AppSidebar() {
+    const { props } = usePage();
+    const isCollaborator: boolean = Boolean(props.isCollaborator);
+    const arbol = props.arbol as Arbol | undefined;
+
+    // menu reducido para colaboradores (invitados)
+    const collaboratorItems: NavItem[] = [
+        // enlace directo al workspace (si hay arbol en la pagina)
+        ...(arbol ? [{
+            title: 'Ir al árbol',
+            href: `/espacio-trabajo/${arbol.id}`,
+            icon: TreePine,
+        }] : []),
+    ];
+
+    const itemsToShow = isCollaborator ? collaboratorItems : mainNavItems;
+
     return (
         <Sidebar collapsible="icon" variant="inset" className="bg-slate-50 dark:bg-gray-900 rounded-xl">
             <SidebarHeader className="bg-white dark:bg-gray-800 shadow-sm rounded-t-xl">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton 
-                            size="lg" 
-                            asChild 
-                            className="min-h-16 px-4 hover:bg-emerald-50 hover:text-emerald-800 dark:hover:bg-emerald-900/20 transition-colors duration-200 rounded-xl" 
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="min-h-16 px-4 hover:bg-emerald-50 hover:text-emerald-800 dark:hover:bg-emerald-900/20 transition-colors duration-200 rounded-xl"
                         >
-                            <Link href={home()} prefetch>
+                            <Link href="/" prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -89,7 +69,7 @@ export function AppSidebar() {
                     <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
                         Navegación
                     </h3>
-                    <NavMain items={mainNavItems} />
+                    <NavMain items={itemsToShow} />
                 </div>
             </SidebarContent>
 

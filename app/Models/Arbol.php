@@ -59,4 +59,11 @@ class Arbol extends Model
             })->values()->toArray(),
         ];
     }
+
+    public function colaboradores()
+    {
+        return $this->belongsToMany(User::class, 'arbol_user')
+            ->withPivot('rol')
+            ->withTimestamps();
+    }
 }
