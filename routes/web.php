@@ -54,6 +54,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Family Tree API Routes - AUTO-GUARDADO (EN USO)
     Route::post('/arboles/api/{arbol}/save-data', [\App\Http\Controllers\FamilyTreeController::class, 'saveTreeData'])
         ->name('arboles.api.save-data');
+
+    // Listado simple de árboles del usuario (para dashboard)
+    Route::get('/arboles/api/my-trees', function () {
+        $user = Auth::user();
+        $trees = $user?->arboles()->get(['id', 'name']) ?? collect();
+        return response()->json(['trees' => $trees]);
+    })->name('arboles.api.my-trees');
     
 
 

@@ -37,18 +37,29 @@ class Arbol extends Model
      */
     public function getTreeData()
     {
+        // Eager load tags to include them in each node
+        $this->loadMissing(['nodes.tags', 'links']);
+
         return [
             'nodes' => $this->nodes->map(function ($node) {
-                return array_merge([
+                $base = [
                     'id' => $node->id,
                     'key' => $node->node_key,
                     'name' => $node->name,
                     'gender' => $node->gender,
-                    'birthYear' => $node->birth_year,
-                    'deathYear' => $node->death_year,
+                    'birth_date' => $node->birth_date,
+                    'death_date' => $node->death_date,
                     'img' => $node->img,
-                    'position' => $node->position
-                ], $node->node_data ?? []);
+                    'position' => $node->position,
+                    'tags' => $node->tags->map(function ($tag) {
+                        return [
+                            'id' => $tag->id,
+                            'tag_value' => $tag->tag_value,
+                        ];
+                    })->values()->toArray(),
+                ];
+                // Merge node_data (may override base fields, intentional) and return
+                return array_merge($base, $node->node_data ?? []);
             })->values()->toArray(),
             'links' => $this->links->map(function ($link) {
                 return array_merge([
