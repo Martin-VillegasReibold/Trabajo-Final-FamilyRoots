@@ -2,6 +2,9 @@ import React from 'react';
 import { usePage, useForm } from '@inertiajs/react';
 import { Save, Clock, AlertCircle } from 'lucide-react';
 import TreeSearch from './TreeSearch';
+import toast, { Toaster } from 'react-hot-toast';
+import { UserPlus } from "lucide-react"; // ícono opcional
+import { useState } from "react";
 
 interface FamilyMember {
     key: number | string;
@@ -56,15 +59,33 @@ export default function Toolbar({
     onFocusMember
 }: ToolbarProps) {
     const { arbol } = usePage<PageProps>().props;
-       // Formulario con Inertia
-    const { data, setData, post, processing, errors } = useForm({
-        email: '',
+    const [showForm, setShowForm] = useState(false);
+
+    // Formulario con Inertia
+    const { data, setData, post, processing, errors, reset } = useForm({
+        email: "",
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/arboles/${arbol.id}/invitar`);
+
+        post(`/arboles/${arbol.id}/invitar`, {
+            onSuccess: () => {
+                toast.success("Invitación enviada correctamente 🎉");
+                reset();
+                setShowForm(false); // ocultar el formulario después de enviar
+
+            },
+            onError: (err) => {
+                if (err.email) {
+                    toast.error(err.email);
+                } else {
+                    toast.error("No se pudo enviar la invitación 😞");
+                }
+            },
+        });
     };
+
     return (
         <div className="mb-3 space-y-3">
             {/* Barra de estado principal */}
@@ -104,27 +125,61 @@ export default function Toolbar({
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-                    <input
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        onChange={e => setData('email', e.target.value)}
-                        placeholder="Correo del invitado"
-                        required
-                        className="border rounded-md px-2 py-1 text-sm dark:bg-gray-700 dark:text-white"
-                    />
+                {/* Botón para mostrar/ocultar el formulario */}
+                <div className="flex">
                     <button
-                        type="submit"
-                        disabled={processing}
-                        className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-                    >
-                        Invitar
+                        type="button"
+                        onClick={() => setShowForm(!showForm)}
+                        className="flex items-center gap-1 px-1 py-1 bg-linear-65 from-emerald-600 to-green-600 text-white rounded-md hover:from-emerald-700 hover:to-green-700 transition-all mr-2">
+                        <UserPlus size={18} />
+                        {showForm ? "Cancelar" : "Invitar a un colaborador"}
                     </button>
-                    {errors.email && (
-                        <span className="text-red-500 text-sm">{errors.email}</span>
+                    {showForm && (
+                        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+                            <input
+                                type="email"
+                                name="email"
+                                value={data.email}
+                                onChange={e => setData('email', e.target.value)}
+                                placeholder="Correo del invitado"
+                                required
+                                className="border rounded-md px-2 py-1 text-sm dark:bg-gray-700 dark:text-white"
+                            />
+                            <button
+                                type="submit"
+                                disabled={processing || !data.email.trim()}
+                                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                Invitar
+                            </button>
+                            {errors.email && (
+                                <span className="text-red-500 text-sm">{errors.email}</span>
+                            )}
+                        </form>
                     )}
-                </form>
+                </div>
+                <Toaster
+                    position="top-right"
+                    toastOptions={{
+                        style: {
+                            background: "#007539", 
+                            color: "#fff",
+                            borderRadius: "0.5rem",
+                        },
+                        success: {
+                            iconTheme: {
+                                primary: "#10b981", 
+                                secondary: "white",
+                            },
+                        },
+                        error: {
+                            iconTheme: {
+                                primary: "#ef4444", 
+                                secondary: "white",
+                            },
+                        },
+                    }}
+                />
 
 
                 {/* Botón de guardar manual */}
