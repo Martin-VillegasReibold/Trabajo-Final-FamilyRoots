@@ -8,9 +8,12 @@ use App\Models\FamilyTreeLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class FamilyTreeController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Verify user is authenticated for all methods
      */
@@ -115,10 +118,13 @@ class FamilyTreeController extends Controller
     {
         $this->checkAuth();
 
+        //Autorizar tanto creador como colaborador
+        $this->authorize('access', $arbol);
+
         // Verify ownership
-        if ($arbol->user_id !== Auth::id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        // if ($arbol->user_id !== Auth::id()) {
+        //     return response()->json(['error' => 'Unauthorized'], 403);
+        // }
 
         $request->validate([
             'nodes' => 'required|array',
@@ -130,7 +136,7 @@ class FamilyTreeController extends Controller
 
             $newKeys = collect($request->nodes)->pluck('key')->toArray();
 
-            // 🔹 Eliminar solo los nodos que ya no existen
+            // Eliminar solo los nodos que ya no existen
             $arbol->nodes()->whereNotIn('node_key', $newKeys)->delete();
 
             foreach ($request->nodes as $nodeData) {

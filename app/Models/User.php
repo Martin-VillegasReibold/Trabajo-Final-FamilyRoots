@@ -64,4 +64,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Calendar::class, 'user_id');
     }
+
+    public function arbolesColaborativos()
+    {
+        return $this->belongsToMany(Arbol::class, 'arbol_user')
+            ->withPivot('rol')
+            ->withTimestamps();
+    }
 }

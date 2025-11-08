@@ -10,6 +10,7 @@ use App\Http\Controllers\QuizController2;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NodeTagController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ArbolInvitacionController;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -100,6 +101,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return response()->json(['fotos' => $fotos]);
     });
 
+
+    Route::post('/arboles/{arbol}/invitar', [ArbolInvitacionController::class, 'store'])
+        ->middleware(['auth'])
+        ->name('invitaciones.enviar');
+
+    Route::get('/invitaciones/aceptar/{token}', [ArbolInvitacionController::class, 'aceptar'])
+    ->name('invitaciones.aceptar');
     // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // Estas rutas fueron creadas para gestión completa de árboles via API,
     // pero el frontend actual usa un flujo diferente con ArbolController y rutas web

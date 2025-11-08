@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Arbol;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ArbolController extends Controller
 {
+    use AuthorizesRequests;
+
     public function store(Request $request)
     {
         $request->validate(['name' => 'required|string|max:255']);
@@ -16,6 +19,9 @@ class ArbolController extends Controller
             'name' => $request->name,
             'user_id' => auth()->id(),
         ]);
+
+        // agregar al creador como colaborador con rol 'creador'
+        $arbol->colaboradores()->attach(auth()->id(), ['rol' => 'creador']);
 
         // Para requests de Inertia, usar location redirect
         //redirecciona a la url y carga todo
@@ -50,16 +56,21 @@ class ArbolController extends Controller
 
     public function show($id)
     {
-        $arbol = Arbol::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        $arbol = Arbol::with('colaboradores')->findOrFail($id);
+        $this->authorize('access', $arbol);
 
         // Obtener los datos del árbol (nodos y enlaces)
         $treeData = $arbol->getTreeData();
 
+        // ¿Es colaborador (invitado) y no el creador?
+        $isCollaborator = auth()->check()
+            && $arbol->user_id !== auth()->id()
+            && $arbol->colaboradores()->where('user_id', auth()->id())->exists();
+
         return Inertia::render('espacio-trabajo', [
             'arbol' => $arbol,
             'initialTreeData' => $treeData,
+            'isCollaborator' => $isCollaborator,
         ]);
     }
 
@@ -68,9 +79,8 @@ class ArbolController extends Controller
     {
         $request->validate(['name' => 'required|string|max:255']);
 
-        $arbol = Arbol::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        $arbol = Arbol::with('colaboradores')->findOrFail($id);
+        $this->authorize('manage', $arbol); // solo creador
 
         $arbol->update([
             'name' => $request->name,
@@ -82,9 +92,8 @@ class ArbolController extends Controller
     // Eliminar
     public function destroy($id)
     {
-        $arbol = Arbol::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        $arbol = Arbol::with('colaboradores')->findOrFail($id);
+        $this->authorize('manage', $arbol); // solo creador
 
         $arbol->delete();
 
