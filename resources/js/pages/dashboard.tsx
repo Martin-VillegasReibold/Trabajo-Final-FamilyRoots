@@ -386,15 +386,14 @@ export default function Dashboard() {
         type NodeWithTags = NodeData & { tags?: TagItem[]; node_data?: { tags?: TagItem[] } };
         const counts = new Map<string, number>();
         for (const n of nodes as NodeWithTags[]) {
-            const tagArray: TagItem[] | undefined = n.node_data?.tags || n.tags;
-            if (!Array.isArray(tagArray)) continue;
+            const top = Array.isArray(n.tags) ? (n.tags as TagItem[]) : [];
+            const embedded = Array.isArray(n.node_data?.tags) ? (n.node_data!.tags as TagItem[]) : [];
+            const tagArray: TagItem[] = [...top, ...embedded];
+            if (tagArray.length === 0) continue;
             for (const t of tagArray) {
-                let value: string = '';
-                if (typeof t === 'string') {
-                    value = t.trim();
-                } else if (t && typeof t === 'object') {
-                    value = String(t.tag_value ?? t.value ?? t.name ?? t.label ?? '').trim();
-                }
+                let value = '';
+                if (typeof t === 'string') value = t.trim();
+                else if (t && typeof t === 'object') value = String(t.tag_value ?? t.value ?? t.name ?? t.label ?? '').trim();
                 if (value) counts.set(value, (counts.get(value) ?? 0) + 1);
             }
         }

@@ -58,8 +58,15 @@ class Arbol extends Model
                         ];
                     })->values()->toArray(),
                 ];
-                // Merge node_data (may override base fields, intentional) and return
-                return array_merge($base, $node->node_data ?? []);
+                // Keep original precedence: node_data can override base fields used by GoJS,
+                // but do NOT allow node_data['tags'] to override relational tags.
+                $nodeData = $node->node_data ?? [];
+                if (is_array($nodeData) && array_key_exists('tags', $nodeData)) {
+                    unset($nodeData['tags']);
+                }
+                // Preserve previous behavior (base first, then node_data overriding),
+                // which avoids visual changes in the diagram.
+                return array_merge($base, $nodeData);
             })->values()->toArray(),
             'links' => $this->links->map(function ($link) {
                 return array_merge([

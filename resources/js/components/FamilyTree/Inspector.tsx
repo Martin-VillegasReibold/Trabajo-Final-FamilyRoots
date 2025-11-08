@@ -214,6 +214,59 @@ export default function Inspector({
                             ) : (
                                 /* Regular Member Panel */
                                 <div className="space-y-4">
+
+
+                                    <div className="flex items-center gap-2">
+                                            <select
+                                                value={addRelationType}
+                                                onChange={(e) =>
+                                                    setAddRelationType(
+                                                        e.target.value as
+                                                            | 'child'
+                                                            | 'spouse'
+                                                            | 'parent',
+                                                    )
+                                                }
+                                                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                                                aria-label="Tipo de relación a agregar"
+                                            >
+                                                <option value="child">
+                                                    👶 Hijo/a
+                                                </option>
+                                                <option value="spouse">
+                                                    💑 Cónyuge
+                                                </option>
+                                                <option value="parent">
+                                                    👨‍👩‍👧‍👦 Padre/Madre
+                                                </option>
+                                            </select>
+                                            <button
+                                                onClick={() =>
+                                                    setShowAddModal(true)
+                                                }
+                                                className="flex cursor-pointer items-center gap-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                                aria-label={`Agregar ${addRelationType}`}
+                                            >
+                                                <svg
+                                                    className="h-4 w-4"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                    />
+                                                </svg>
+                                                Añadir
+                                            </button>
+                                        </div>
+
+
+
+
                                     <div className="rounded-lg border bg-white p-4 dark:bg-gray-800">
                                         <div className="mb-4 flex items-center gap-3">
                                             <img
@@ -242,6 +295,68 @@ export default function Inspector({
                                             </div>
                                         </div>
                                     </div>
+
+
+                                      <div>
+                                            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Imagen (URL)
+                                            </label>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    value={selected.img || ''}
+                                                    onChange={(e) =>
+                                                        updateSelectedMember({
+                                                            img: e.target.value,
+                                                        })
+                                                    }
+                                                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                                                    placeholder="https://ejemplo.com/foto.jpg"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex cursor-pointer items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800"
+                                                    onClick={openPhotosModal}
+                                                    title="Elegir de Mis Fotos"
+                                                >
+                                                    <svg
+                                                        className="h-4 w-4"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M4 16V4a2 2 0 012-2h12a2 2 0 012 2v12M4 16l4-4a2 2 0 012.828 0l2.344 2.344a2 2 0 002.828 0L20 8M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4"
+                                                        />
+                                                    </svg>
+                                                    Mis Fotos
+                                                </button>
+                                            </div>
+                                            <UserPhotosModal
+                                                open={showPhotosModal}
+                                                photos={userPhotos}
+                                                onSelect={(url) => {
+                                                    updateSelectedMember({
+                                                        img: url,
+                                                    });
+                                                    setShowPhotosModal(false);
+                                                }}
+                                                onClose={() =>
+                                                    setShowPhotosModal(false)
+                                                }
+                                            />
+                                            {loadingPhotos &&
+                                                showPhotosModal && (
+                                                    <div className="mt-2 text-xs text-gray-400">
+                                                        Cargando fotos...
+                                                    </div>
+                                                )}
+                                        </div>
+
+
+
 
                                     {/* Edit fields */}
                                     <div className="space-y-3">
@@ -486,116 +601,10 @@ export default function Inspector({
                                                 }
                                             />
                                         </div>
-
-                                        <div>
-                                            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Imagen (URL)
-                                            </label>
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    value={selected.img || ''}
-                                                    onChange={(e) =>
-                                                        updateSelectedMember({
-                                                            img: e.target.value,
-                                                        })
-                                                    }
-                                                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                                                    placeholder="https://ejemplo.com/foto.jpg"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex cursor-pointer items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:hover:bg-emerald-800"
-                                                    onClick={openPhotosModal}
-                                                    title="Elegir de Mis Fotos"
-                                                >
-                                                    <svg
-                                                        className="h-4 w-4"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth={2}
-                                                            d="M4 16V4a2 2 0 012-2h12a2 2 0 012 2v12M4 16l4-4a2 2 0 012.828 0l2.344 2.344a2 2 0 002.828 0L20 8M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4"
-                                                        />
-                                                    </svg>
-                                                    Mis Fotos
-                                                </button>
-                                            </div>
-                                            <UserPhotosModal
-                                                open={showPhotosModal}
-                                                photos={userPhotos}
-                                                onSelect={(url) => {
-                                                    updateSelectedMember({
-                                                        img: url,
-                                                    });
-                                                    setShowPhotosModal(false);
-                                                }}
-                                                onClose={() =>
-                                                    setShowPhotosModal(false)
-                                                }
-                                            />
-                                            {loadingPhotos &&
-                                                showPhotosModal && (
-                                                    <div className="mt-2 text-xs text-gray-400">
-                                                        Cargando fotos...
-                                                    </div>
-                                                )}
-                                        </div>
                                     </div>
 
                                     {/* Actions for regular members */}
                                     <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-700">
-                                        <div className="flex items-center gap-2">
-                                            <select
-                                                value={addRelationType}
-                                                onChange={(e) =>
-                                                    setAddRelationType(
-                                                        e.target.value as
-                                                            | 'child'
-                                                            | 'spouse'
-                                                            | 'parent',
-                                                    )
-                                                }
-                                                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                                                aria-label="Tipo de relación a agregar"
-                                            >
-                                                <option value="child">
-                                                    👶 Hijo/a
-                                                </option>
-                                                <option value="spouse">
-                                                    💑 Cónyuge
-                                                </option>
-                                                <option value="parent">
-                                                    👨‍👩‍👧‍👦 Padre/Madre
-                                                </option>
-                                            </select>
-                                            <button
-                                                onClick={() =>
-                                                    setShowAddModal(true)
-                                                }
-                                                className="flex cursor-pointer items-center gap-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                                                aria-label={`Agregar ${addRelationType}`}
-                                            >
-                                                <svg
-                                                    className="h-4 w-4"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                                    />
-                                                </svg>
-                                                Añadir
-                                            </button>
-                                        </div>
-
                                         <button
                                             onClick={() =>
                                                 setShowDeleteModal(true)
