@@ -44,7 +44,7 @@ export function ensureUpright(angle: number) {
 export class RadialLayoutCustom extends go.Layout {
     layerThickness = 70;
 
-    override doLayout(coll: go.Diagram | go.Group | go.Iterable<go.Part>) {
+    override doLayout(_coll: go.Diagram | go.Group | go.Iterable<go.Part>) {
         const diagram = this.diagram;
         if (!diagram) return;
 
