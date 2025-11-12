@@ -58,7 +58,7 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
         //     }
         // }
 
-        diagram.addDiagramListener("LayoutCompleted", (_e) => {
+        diagram.addDiagramListener("LayoutCompleted", () => {
             diagram.links.each(link => {
                 if (link.category === "spouse" || link.category === "parent") {
                     const n1 = link.fromNode;

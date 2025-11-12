@@ -6,7 +6,7 @@ interface NodeGeometryData {
     sweep?: number;
     radius?: number;
 }
-export function makeAnnularWedge(data:NodeGeometryData): go.Geometry | null {
+export function makeAnnularWedge(data: NodeGeometryData): go.Geometry | null {
     const { angle, sweep, radius } = data;
     if (angle === undefined || sweep === undefined || radius === undefined) return null;
 
@@ -29,7 +29,7 @@ export function makeAnnularWedge(data:NodeGeometryData): go.Geometry | null {
     return geo;
 }
 
-export function computeTextAlignment(data: NodeGeometryData): go.Spot{
+export function computeTextAlignment(data: NodeGeometryData): go.Spot {
     const { angle, radius } = data;
     if (angle === undefined || radius === undefined) return go.Spot.Center;
     const p = new go.Point(radius + layerThickness / 2, 0).rotate(angle);
@@ -43,8 +43,7 @@ export function ensureUpright(angle: number) {
 
 export class RadialLayoutCustom extends go.Layout {
     layerThickness = 70;
-
-    override doLayout(_coll: go.Diagram | go.Group | go.Iterable<go.Part>) {
+    override doLayout() {
         const diagram = this.diagram;
         if (!diagram) return;
 
@@ -75,7 +74,7 @@ export class RadialLayoutCustom extends go.Layout {
 
                 let actualSweep = angleStep;
                 if (nodes.length === 1 && level > 0) {
-                    actualSweep = 40; // MAximo 40° para nodos solitarios
+                    actualSweep = 40; // Máximo 40° para nodos solitarios
                 }
 
                 diagram.model.setDataProperty(node.data, "angle", angle);
