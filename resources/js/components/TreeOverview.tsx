@@ -4,9 +4,10 @@ import { buildModel } from "./FamilyTree/useDiagramManagement";
 
 interface TreeOverviewProps {
     arbolId: number;
+    height?: string; 
 }
 
-export default function TreeOverview({ arbolId }: TreeOverviewProps) {
+export default function TreeOverview({ arbolId, height }: TreeOverviewProps) {
     const diagramRef = useRef<HTMLDivElement>(null);
     const overviewRef = useRef<HTMLDivElement>(null);
 
@@ -234,7 +235,7 @@ export default function TreeOverview({ arbolId }: TreeOverviewProps) {
                 style={{
                     // fallback for environments without Tailwind
                     width: "100%",
-                    height: "150px",
+                    height: height || "150px",
                     borderRadius: "5px",
                 }}
             ></div>

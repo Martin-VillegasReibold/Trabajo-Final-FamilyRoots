@@ -5,6 +5,8 @@ import TreeSearch from './TreeSearch';
 import toast, { Toaster } from 'react-hot-toast';
 import { UserPlus } from "lucide-react"; // ícono opcional
 import { useState } from "react";
+import { Button } from "@/components/ui/button"
+import ExportModal from "@/components/FamDiagram/ExportModal"
 
 interface FamilyMember {
     key: number | string;
@@ -85,6 +87,7 @@ export default function Toolbar({
             },
         });
     };
+    const [isExportModalOpen, setExportModalOpen] = useState(false)
 
     return (
         <div className="mb-3 space-y-3">
@@ -124,6 +127,11 @@ export default function Toolbar({
                         )}
                     </div>
                 </div>
+                {/*-------------------------------------------- Boton Exportar  */}
+                <div className="flex items-center gap-2 ">
+                    <Button onClick={() => setExportModalOpen(true)} className='cursor-pointer bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-900'>Exportar</Button>
+                    <ExportModal open={isExportModalOpen} onClose={() => setExportModalOpen(false)} arbolId={arbol.id}/>
+                </div>
 
                 {/* Botón para mostrar/ocultar el formulario */}
                 <div className="flex">
@@ -162,19 +170,19 @@ export default function Toolbar({
                     position="top-right"
                     toastOptions={{
                         style: {
-                            background: "#007539", 
+                            background: "#007539",
                             color: "#fff",
                             borderRadius: "0.5rem",
                         },
                         success: {
                             iconTheme: {
-                                primary: "#10b981", 
+                                primary: "#10b981",
                                 secondary: "white",
                             },
                         },
                         error: {
                             iconTheme: {
-                                primary: "#ef4444", 
+                                primary: "#ef4444",
                                 secondary: "white",
                             },
                         },
