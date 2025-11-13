@@ -1,14 +1,16 @@
 import { useRef } from "react";
+import * as go from "gojs";
 import { useFanTreeDiagram } from "./useFanTreeDiragram";
 
 interface FanTreeOverviewProps {
     arbolId: number;
     height?: string;
+    onReady?: (diagram: go.Diagram) => void;
 }
-export default function FanTreeOverview({ arbolId, height = "300px" }: FanTreeOverviewProps) {
+export default function FanTreeOverview({ arbolId, height = "300px", onReady }: FanTreeOverviewProps) {
     const diagramRef = useRef<HTMLDivElement | null>(null);
 
-    useFanTreeDiagram(diagramRef, arbolId);
+    useFanTreeDiagram(diagramRef, arbolId, onReady);
 
     return (
         <div

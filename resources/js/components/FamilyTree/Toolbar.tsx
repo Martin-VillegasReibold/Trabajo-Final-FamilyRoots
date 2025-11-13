@@ -1,11 +1,10 @@
 import React from 'react';
 import { usePage, useForm } from '@inertiajs/react';
-import { Save, Clock, AlertCircle } from 'lucide-react';
+import { Save, Clock, AlertCircle, Import } from 'lucide-react';
 import TreeSearch from './TreeSearch';
 import toast, { Toaster } from 'react-hot-toast';
 import { UserPlus } from "lucide-react"; // ícono opcional
 import { useState } from "react";
-import { Button } from "@/components/ui/button"
 import ExportModal from "@/components/FamDiagram/ExportModal"
 
 interface FamilyMember {
@@ -128,11 +127,6 @@ export default function Toolbar({
                     </div>
                 </div>
                 {/*-------------------------------------------- Boton Exportar  */}
-                <div className="flex items-center gap-2 ">
-                    <Button onClick={() => setExportModalOpen(true)} className='cursor-pointer bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-900'>Exportar</Button>
-                    <ExportModal open={isExportModalOpen} onClose={() => setExportModalOpen(false)} arbolId={arbol.id}/>
-                </div>
-
                 {/* Botón para mostrar/ocultar el formulario */}
                 <div className="flex">
                     <button
@@ -189,7 +183,12 @@ export default function Toolbar({
                     }}
                 />
 
-
+               <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => setExportModalOpen(true)} className='rounded-md flex items-center px-4 py-2 cursor-pointer bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-900 '>
+                        <Import className="w-4 h-4 mr-2" />
+                        Exportar
+                    </button>
+                    <ExportModal open={isExportModalOpen} onClose={() => setExportModalOpen(false)} arbolId={arbol.id} arbolName={arbol.name} />
                 {/* Botón de guardar manual */}
                 {onManualSave && (
                     <button
@@ -201,6 +200,7 @@ export default function Toolbar({
                         {loading ? 'Guardando...' : 'Guardar'}
                     </button>
                 )}
+                </div>
             </div>
 
             {/* Controles de herramientas */}

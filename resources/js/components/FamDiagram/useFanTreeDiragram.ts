@@ -23,25 +23,37 @@ interface LinkData {
     to: string;
     relationship: string;
 }
-export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, arbolId: number) {
+export function useFanTreeDiagram(
+    ref: React.RefObject<HTMLDivElement | null>,
+    arbolId: number,
+    onReady?: (diagram: go.Diagram) => void
+) {
     useEffect(() => {
-        if (!ref.current) return;
+        let cancelled = false;
+        let raf = 0;
+        let diagram: go.Diagram | null = null;
 
-        const $ = go.GraphObject.make;
+        const init = () => {
+            if (cancelled) return;
+            const el = ref.current;
+            if (!el || !el.isConnected || el.clientWidth === 0 || el.clientHeight === 0) {
+                raf = window.requestAnimationFrame(init);
+                return;
+            }
 
-        const diagram = $(go.Diagram, ref.current, {
-            initialAutoScale: go.Diagram.Uniform,
-            isReadOnly: true,
-            maxSelectionCount: 1,
-            layout: $(RadialLayoutCustom, {
-                layerThickness: 70,
-                isOngoing: false,
-                isInitial: false,
-            }),
-            "animationManager.isEnabled": false,
-            initialContentAlignment: go.Spot.Center,
-            
-        });
+            const $ = go.GraphObject.make;
+            diagram = $(go.Diagram, el, {
+                initialAutoScale: go.Diagram.Uniform,
+                isReadOnly: true,
+                maxSelectionCount: 1,
+                layout: $(RadialLayoutCustom, {
+                    layerThickness: 70,
+                    isOngoing: false,
+                    isInitial: false,
+                }),
+                "animationManager.isEnabled": false,
+                initialContentAlignment: go.Spot.Center,
+            });
 
         // Funcion para formatear fechas en formato DD/MM/YYYY
         // function formatDate(dateString: string): string {
@@ -58,8 +70,8 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
         //     }
         // }
 
-        diagram.addDiagramListener("LayoutCompleted", () => {
-            diagram.links.each(link => {
+        diagram!.addDiagramListener("LayoutCompleted", () => {
+            diagram!.links.each(link => {
                 if (link.category === "spouse" || link.category === "parent") {
                     const n1 = link.fromNode;
                     const n2 = link.toNode;
@@ -86,7 +98,7 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
         );
 
         //-------------------------------------------- Template para nodos normales
-        diagram.nodeTemplate = $(
+        diagram!.nodeTemplate = $(
             go.Node, "Spot",
             {
                 locationSpot: go.Spot.Center,
@@ -153,7 +165,7 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
         );
 
         //-------------------------------------------- Template para nodo raiz
-        diagram.nodeTemplateMap.add(
+        diagram!.nodeTemplateMap.add(
             "Root",
             $(
                 go.Node, "Auto",
@@ -211,7 +223,7 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
         );
 
 
-        diagram.linkTemplate = $(
+        diagram!.linkTemplate = $(
             go.Link,
             {
                 routing: go.Link.Normal,
@@ -256,7 +268,7 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
                 console.log("Nodos procesados:", nodeDataArray);
                 console.log("Enlaces procesados:", linkDataArray);
 
-                let rootNode = nodeDataArray.find(
+                const rootNode = nodeDataArray.find(
                     (n: NodeData) => !linkDataArray.some((l: LinkData) => l.to === n.key)
                 );
 
@@ -265,18 +277,28 @@ export function useFanTreeDiagram(ref: React.RefObject<HTMLDivElement | null>, a
                     console.log("Nodo raíz identificado:", rootNode);
                 }
 
+                if (!diagram) return;
                 diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
 
                 diagram.updateAllTargetBindings();
                 diagram.layoutDiagram(true);
                 diagram.zoomToFit();
+
+                if (onReady) onReady(diagram);
             })
             .catch((err) => console.error("Error cargando árbol:", err));
 
+        };
+
+        raf = window.requestAnimationFrame(init);
+
         return () => {
+            cancelled = true;
+            if (raf) window.cancelAnimationFrame(raf);
             if (diagram) {
                 diagram.clear();
+                diagram.div = null as unknown as HTMLDivElement; // ensure cleanup
             }
         };
-    }, [arbolId, ref]);
+    }, [arbolId, ref, onReady]);
 }

@@ -4,10 +4,11 @@ import { buildModel } from "./FamilyTree/useDiagramManagement";
 
 interface TreeOverviewProps {
     arbolId: number;
-    height?: string; 
+    height?: string;
+    onReady?: (diagram: go.Diagram) => void;
 }
 
-export default function TreeOverview({ arbolId, height }: TreeOverviewProps) {
+export default function TreeOverview({ arbolId, height, onReady }: TreeOverviewProps) {
     const diagramRef = useRef<HTMLDivElement>(null);
     const overviewRef = useRef<HTMLDivElement>(null);
 
@@ -103,20 +104,22 @@ export default function TreeOverview({ arbolId, height }: TreeOverviewProps) {
                     font: '9px Inter, system-ui',
                     stroke: '#6B7280',
                     textAlign: 'center',
-                    maxSize: new go.Size(130, NaN)
+                    maxSize: new go.Size(130, NaN),
+                    margin: new go.Margin(0, 0, 0, 0)
                 },
-                    new go.Binding('text', '', (data) => {
-                        if (data.isMarriageNode) return '';
-                        let years = '';
-                        if (data.birthYear) {
-                            years = data.birthYear.toString();
-                            if (data.deathYear) {
-                                years += ` - ${data.deathYear}`;
-                            }
-                        }
-                        return years;
-                    }),
-                    new go.Binding('visible', '', (data) => !data.isMarriageNode))
+                    new go.Binding('text', 'birth_date', d => d ? `❤️${d}` : ''),
+                    new go.Binding('visible', '', data => !data.isMarriageNode && !!data.birth_date)
+                ),
+                $(go.TextBlock, {
+                    font: '9px Inter, system-ui',
+                    stroke: '#6B7280',
+                    textAlign: 'center',
+                    maxSize: new go.Size(130, NaN),
+                    margin: new go.Margin(0, 0, 0, 0)
+                },
+                    new go.Binding('text', 'death_date', d => d ? `⚰️${d}` : ''),
+                    new go.Binding('visible', '', data => !data.isMarriageNode && !!data.death_date)
+                )
             )
         );
 
@@ -211,11 +214,14 @@ export default function TreeOverview({ arbolId, height }: TreeOverviewProps) {
             })
         );
 
+        // notify parent once ready
+        if (onReady) onReady(diagram);
+
         return () => {
             diagram.div = null;
             overview.div = null;
         };
-    }, [arbolId]);
+    }, [arbolId, onReady]);
 
     return (
         <div className="w-full flex flex-col items-center">
