@@ -81,6 +81,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/nodes/{node}/tags', [NodeTagController::class, 'index'])->name('node-tags.index');
     Route::post('/nodes/tags', [NodeTagController::class, 'store'])->name('node-tags.store');
     Route::delete('/nodes/tags/{id}', [NodeTagController::class, 'destroy'])->name('node-tags.destroy');
+    // Traer tags para múltiples nodos en un solo request
+    Route::get('/nodes/tags/batch', [NodeTagController::class, 'batch'])->name('node-tags.batch');
 
     // Rutas para fotos
     Route::get('/mis-fotos', [\App\Http\Controllers\FotoController::class, 'index'])->name('mis-fotos');

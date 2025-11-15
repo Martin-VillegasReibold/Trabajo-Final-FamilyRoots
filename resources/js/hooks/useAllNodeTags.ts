@@ -13,26 +13,24 @@ export default function useAllNodeTags(memberIds: (number | string)[], refreshTr
 
     const memberIdsString = memberIds.join(',');
 
-    const fetchAllTags = useCallback(async () => {
-        if (memberIds.length === 0) return;
+   const fetchAllTags = useCallback(async () => {
+    if (memberIds.length === 0) return;
 
-        setLoading(true);
-        try {
-            const requests = memberIds.map(nodeId =>
-                axios.get(`/nodes/${nodeId}/tags`)
-                    .then(res => [nodeId, res.data])
-                    .catch(() => [nodeId, []])
-            );
+    setLoading(true);
+    try {
+        const res = await axios.get("/nodes/tags/batch", {
+            params: { ids: memberIds },
+        });
 
-            const results = await Promise.all(requests);
-            const tagsByNode = Object.fromEntries(results);
-            setAllTags(tagsByNode);
-        } catch (error) {
-            console.error("Error cargando todas las tags:", error);
-        } finally {
-            setLoading(false);
-        }
-    }, [memberIdsString]);
+        setAllTags(res.data);
+
+    } catch (error) {
+        console.error("Error cargando todas las tags:", error);
+    } finally {
+        setLoading(false);
+    }
+}, [memberIdsString]);
+
 
     useEffect(() => {
         fetchAllTags();

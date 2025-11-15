@@ -123,7 +123,7 @@ export default function ExportModal({ arbolId, open, onClose, arbolName }: Expor
                         <div className="relative group">
                             <Button
                                 variant={viewMode === "clasico" ? "default" : "outline"}
-                                onClick={() => setViewMode("clasico")}>
+                                onClick={() => setViewMode("clasico")} className="cursor-pointer">
                                 Árbol clásico
                             </Button>
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 hidden group-hover:block w-64 p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 text-sm">
@@ -134,7 +134,7 @@ export default function ExportModal({ arbolId, open, onClose, arbolName }: Expor
                         <div className="relative group">
                             <Button
                                 variant={viewMode === "abanico" ? "default" : "outline"}
-                                onClick={() => setViewMode("abanico")}>
+                                onClick={() => setViewMode("abanico")} className="cursor-pointer">
                                 Árbol radial
                             </Button>
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 hidden group-hover:block w-64 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 text-sm">
@@ -144,10 +144,10 @@ export default function ExportModal({ arbolId, open, onClose, arbolName }: Expor
                     </div>
 
                     <div className="flex gap-2 mt-2">
-                        <Button variant={format === 'pdf' ? 'default' : 'outline'} onClick={() => setFormat('pdf')}>PDF</Button>
-                        <Button variant={format === 'png' ? 'default' : 'outline'} onClick={() => setFormat('png')}>PNG</Button>
-                        <Button variant={format === 'jpg' ? 'default' : 'outline'} onClick={() => setFormat('jpg')}>JPG</Button>
-                        <Button variant={format === 'svg' ? 'default' : 'outline'} onClick={() => setFormat('svg')}>SVG</Button>
+                        <Button variant={format === 'pdf' ? 'default' : 'outline'} onClick={() => setFormat('pdf')} className="cursor-pointer">PDF</Button>
+                        <Button variant={format === 'png' ? 'default' : 'outline'} onClick={() => setFormat('png')} className="cursor-pointer">PNG</Button>
+                        <Button variant={format === 'jpg' ? 'default' : 'outline'} onClick={() => setFormat('jpg')} className="cursor-pointer">JPG</Button>
+                        <Button variant={format === 'svg' ? 'default' : 'outline'} onClick={() => setFormat('svg')} className="cursor-pointer">SVG</Button>
                     </div>
 
                     <div className=" w-full border rounded-lg flex items-center justify-center text-muted-foreground  bg-gray-50 dark:bg-gray-800">
@@ -159,8 +159,8 @@ export default function ExportModal({ arbolId, open, onClose, arbolName }: Expor
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={onClose} variant="secondary">Cancelar</Button>
-                    <Button onClick={onDownload} disabled={downloading || (viewMode === 'clasico' ? !classicDiagramRef.current : !radialDiagramRef.current)}>
+                    <Button onClick={onClose} variant="secondary" className="cursor-pointer">Cancelar</Button>
+                    <Button onClick={onDownload} disabled={downloading || (viewMode === 'clasico' ? !classicDiagramRef.current : !radialDiagramRef.current)} className="cursor-pointer">
                         {downloading ? "Descargando..." : "Descargar"}
                     </Button>
                 </DialogFooter>

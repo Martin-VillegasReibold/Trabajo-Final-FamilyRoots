@@ -1,5 +1,4 @@
 import CommentSection from '@/components/CommentSection';
-// ...otros imports necesarios...
 import useCommentsStatus from '@/hooks/useCommentStatus';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
@@ -110,7 +109,7 @@ export default function Inspector({
                     </button>
 
                     {selected &&
-                        selected.id !== 1 &&
+                        
                         selected.id !== undefined && (
                             <button
                                 className={`text-lm flex flex-1 cursor-pointer items-center justify-center gap-2 py-2 font-medium transition-colors ${
@@ -749,7 +748,6 @@ export default function Inspector({
                     ))}
                 {activeTab === 'comments' &&
                     selected &&
-                    selected.id !== 1 &&
                     selected.id !== undefined && (
                         <CommentSection
                             nodeId={selected.id as number}

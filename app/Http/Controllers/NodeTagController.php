@@ -46,4 +46,20 @@ class NodeTagController extends Controller
             'message' => 'Etiqueta eliminada correctamente.'
         ]);
     }
+
+    public function batch(Request $request)
+{
+    $ids = $request->query('ids', []);
+
+    if (!is_array($ids) || empty($ids)) {
+        return response()->json([]);
+    }
+
+    // Traer todas las tags de los nodos solicitados
+    $tags = \App\Models\NodeTag::whereIn('node_id', $ids)->get()->groupBy('node_id');
+
+    // Formato: { nodeId: [tags] }
+    return response()->json($tags);
+}
+
 }
