@@ -52,7 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/arboles/{id}', [ArbolController::class, 'destroy'])->name('arbol.destroy');
 
 
-    // Family Tree API Routes - AUTO-GUARDADO (EN USO)
+    // Family Tree API Routes - AUTO-GUARDADO
     Route::post('/arboles/api/{arbol}/save-data', [\App\Http\Controllers\FamilyTreeController::class, 'saveTreeData'])
         ->name('arboles.api.save-data');
 
@@ -63,7 +63,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return response()->json(['trees' => $trees]);
     })->name('arboles.api.my-trees');
     
-
 
     // Comentarios
     Route::get('/nodes/{node}/comments', [CommentController::class, 'index']);
@@ -90,18 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/mis-fotos/{id}', [\App\Http\Controllers\FotoController::class, 'destroy'])->name('mis-fotos.destroy');
 
     // API para obtener fotos del usuario autenticado (para el modal de selección de imagen)
-    Route::get('/api/mis-fotos', function () {
-        $user = Auth::user();
-        $fotos = $user->fotos()->get(['id', 'nombre', 'ruta'])
-            ->map(function ($foto) {
-                return [
-                    'id' => $foto->id,
-                    'nombre' => $foto->nombre,
-                    'url' => '/storage/' . ltrim($foto->ruta, '/'),
-                ];
-            })->values()->toArray();
-        return response()->json(['fotos' => $fotos]);
-    });
+    Route::get('/api/mis-fotos', [\App\Http\Controllers\FotoController::class, 'apiIndex']);
 
 
     Route::post('/arboles/{arbol}/invitar', [ArbolInvitacionController::class, 'store'])
@@ -110,24 +98,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/invitaciones/aceptar/{token}', [ArbolInvitacionController::class, 'aceptar'])
     ->name('invitaciones.aceptar');
-    // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
-    // Estas rutas fueron creadas para gestión completa de árboles via API,
-    // pero el frontend actual usa un flujo diferente con ArbolController y rutas web
-    // Route::get('/arboles/api', [\App\Http\Controllers\FamilyTreeController::class, 'index'])->name('arboles.api.index');
-    // Route::post('/arboles/api', [\App\Http\Controllers\FamilyTreeController::class, 'store'])->name('arboles.api.store');
-    // Route::get('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'show'])->name('arboles.api.show');
-    // Route::put('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'update'])->name('arboles.api.update');
-    // Route::delete('/arboles/api/{arbol}', [\App\Http\Controllers\FamilyTreeController::class, 'destroy'])->name('arboles.api.destroy');
-
-    // Individual Node Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
-    // El sistema actual guarda todos los datos del árbol de una vez via save-data
-    // Route::post('/arboles/api/{arbol}/nodes', [\App\Http\Controllers\FamilyTreeController::class, 'addNode'])
-    //     ->name('arboles.api.add-node');
-    // Route::put('/arboles/api/{arbol}/nodes/{node}', [\App\Http\Controllers\FamilyTreeController::class, 'updateNode'])
-    //     ->name('arboles.api.update-node');
-    // Route::delete('/arboles/api/{arbol}/nodes/{node}', [\App\Http\Controllers\FamilyTreeController::class, 'deleteNode'])
-    //     ->name('arboles.api.delete-node');
-
 });
 
     // Nueva ruta para obtener datos del arbol (para el Overview)

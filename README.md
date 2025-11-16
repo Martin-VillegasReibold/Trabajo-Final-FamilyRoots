@@ -30,6 +30,8 @@ Con esta herramienta se facilita la construcción colaborativa de un legado fami
 
 - [GoJS](https://gojs.net/latest)
 - [FullCalendar](https://fullcalendar.io)
+- [react-country-state-city](https://www.npmjs.com/package/react-country-state-city)
+- [d3-geo](https://d3js.org/d3-geo)
 
 # Estado de Requerimientos
 

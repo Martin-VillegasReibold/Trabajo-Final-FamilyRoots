@@ -25,6 +25,21 @@ class FotoController extends Controller
         ]);
     }
 
+    // API para obtener fotos del usuario autenticado (para el modal de selección de imagen)
+    public function apiIndex()
+    {
+        $user = Auth::user();
+        $fotos = $user->fotos()->get(['id', 'nombre', 'ruta'])
+            ->map(function ($foto) {
+                return [
+                    'id' => $foto->id,
+                    'nombre' => $foto->nombre,
+                    'url' => '/storage/' . ltrim($foto->ruta, '/'),
+                ];
+            })->values()->toArray();
+        return response()->json(['fotos' => $fotos]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
