@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { GetCountries } from 'react-country-state-city/dist/esm/index';
 import * as go from 'gojs';
 import { FamilyMember } from './useFamilyMemberManagement';
 // Hook para gestionar el diagrama de GoJS, incluyendo su inicialización, actualización y 
@@ -11,10 +12,66 @@ export function useDiagramManagement(
 ) {
     const divRef = useRef<HTMLDivElement | null>(null);
     const diagramRef = useRef<go.Diagram | null>(null);
+    const countryIsoMapRef = useRef<Map<string, string>>(new Map());
 
     // Use refs to avoid re-initializing diagram when these functions change
     const setSelectedRef = useRef(setSelected);
     const handleLinkCreationStartRef = useRef(handleLinkCreationStart);
+
+    const getAgeLabel = (member: FamilyMember) => {
+        if (!member || member.isMarriageNode) return '';
+        const birthDate = member.birth_date ? new Date(member.birth_date) : null;
+        if (!birthDate || Number.isNaN(birthDate.getTime())) return '';
+
+        const deathDate = member.death_date ? new Date(member.death_date) : null;
+        const endDate = deathDate && !Number.isNaN(deathDate.getTime()) ? deathDate : new Date();
+
+        let age = endDate.getFullYear() - birthDate.getFullYear();
+        const hasHadBirthday =
+            endDate.getMonth() > birthDate.getMonth() ||
+            (endDate.getMonth() === birthDate.getMonth() && endDate.getDate() >= birthDate.getDate());
+        if (!hasHadBirthday) age -= 1;
+
+        if (age < 0) return '';
+        return deathDate ? `${age} años` : `${age} años`;
+    };
+
+    const getBirthFlagUrl = (member: FamilyMember) => {
+        const countryName = member.birth_place?.country || member.birth_country;
+        if (!countryName) return '';
+        const iso2 = countryIsoMapRef.current.get(countryName.trim().toLowerCase());
+        return iso2 ? `https://flagcdn.com/24x18/${iso2.toLowerCase()}.png` : '';
+    };
+
+    useEffect(() => {
+        let isMounted = true;
+        GetCountries()
+            .then((data) => {
+                if (!isMounted) return;
+                const map = new Map<string, string>();
+                (data as { name: string; iso2: string }[]).forEach((country) => {
+                    const key = country.name?.trim().toLowerCase();
+                    const value = country.iso2?.trim();
+                    if (key && value) {
+                        map.set(key, value);
+                    }
+                });
+                countryIsoMapRef.current = map;
+                const diagram = diagramRef.current;
+                if (diagram) {
+                    diagram.startTransaction('refresh flag bindings');
+                    diagram.updateAllTargetBindings();
+                    diagram.commitTransaction('refresh flag bindings');
+                }
+            })
+            .catch(() => {
+                // Sin datos de países no mostramos bandera.
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     // Update refs when functions change
     useEffect(() => {
@@ -122,14 +179,27 @@ export function useDiagramManagement(
             $(go.Panel, 'Vertical', { margin: 6 },
                 // ← Solo visible si hasIllness es true
 
-                $(go.Picture, {
-                    name: 'PICTURE',
-                    desiredSize: new go.Size(50, 50),  // Slightly smaller image for better proportions
-                    margin: new go.Margin(0, 0, 3, 0),
-                    imageStretch: go.GraphObject.UniformToFill,
-                },
-                    new go.Binding('source', 'img'),
-                    new go.Binding('visible', '', (data) => !data.isMarriageNode)),
+                $(go.Panel, 'Spot',
+                    {
+                        margin: new go.Margin(0, 0, 3, 0),
+                        desiredSize: new go.Size(50, 50),
+                        isClipping: true,
+                    },
+                    new go.Binding('visible', '', (data) => !data.isMarriageNode),
+                    $(go.Shape, 'RoundedRectangle', {
+                        fill: 'transparent',
+                        stroke: null,
+                        strokeWidth: 0,
+                        parameter1: 8
+                    }),
+                    $(go.Picture, {
+                        name: 'PICTURE',
+                        desiredSize: new go.Size(50, 50),
+                        imageStretch: go.GraphObject.UniformToFill,
+                        alignment: go.Spot.Center
+                    },
+                        new go.Binding('source', 'img'))
+                ),
                 $(go.TextBlock, {
                     font: '600 11px Inter, system-ui, -apple-system, "Segoe UI", Roboto',  // Slightly smaller font
                     stroke: '#064E3B',
@@ -161,7 +231,27 @@ export function useDiagramManagement(
                         }
                         return years;
                     }),
-                    new go.Binding('visible', '', (data) => !data.isMarriageNode))
+                    new go.Binding('visible', '', (data) => !data.isMarriageNode)),
+                $(go.TextBlock, {
+                    font: '9px Inter, system-ui',
+                    stroke: '#4B5563',
+                    textAlign: 'center',
+                    maxSize: new go.Size(130, NaN),
+                    margin: new go.Margin(2, 0, 0, 0)
+                },
+                    new go.Binding('text', '', (data: FamilyMember) => getAgeLabel(data)),
+                    new go.Binding('visible', '', (data: FamilyMember) => Boolean(getAgeLabel(data)))
+                )
+            ),
+            $(go.Picture, {
+                alignment: go.Spot.TopLeft,
+                alignmentFocus: go.Spot.TopLeft,
+                desiredSize: new go.Size(20, 15),
+                margin: new go.Margin(4, 0, 0, 4),
+                imageStretch: go.GraphObject.UniformToFill,
+            },
+                new go.Binding('source', '', (data: FamilyMember) => getBirthFlagUrl(data)),
+                new go.Binding('visible', '', (data: FamilyMember) => Boolean(getBirthFlagUrl(data)))
             ),
             $(go.Picture, {
                     source: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="1.2857142857142858" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase-medical-icon lucide-briefcase-medical"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6v14"/><path d="M6 6v14"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>',
@@ -334,7 +424,10 @@ export function useDiagramManagement(
                 model.setDataProperty(link, 'category', linkData.category);
             }
         });
-    }, [members, buildModel]); 
+        // Nota: solo dependemos de `members`. `illnessMap` se maneja en el efecto siguiente
+        // para evitar reconstruir el modelo completo cada vez que cambian las etiquetas.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [members]); 
 
     // Efecto 2: Solo para actualizar las enfermedades (sin recrear el modelo)
     useEffect(() => {
@@ -388,6 +481,10 @@ export function buildModel(
             gender: member.gender || 'Other',
             birth_date: member.birth_date,
             death_date: member.death_date,
+            birth_place: member.birth_place,
+            death_place: member.death_place,
+            birth_country: member.birth_country,
+            death_country: member.death_country,
             img: member.img || '/imagenes/logo Arbol.png',
             spouses: member.spouses || [],
             parents: member.parents || [],

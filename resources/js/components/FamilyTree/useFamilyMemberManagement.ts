@@ -8,6 +8,18 @@ export interface FamilyMember {
     birth_date?: string;
     death_date?: string;
     img?: string;
+    birth_place?: {
+        country?: string;
+        state?: string;
+        city?: string;
+    };
+    death_place?: {
+        country?: string;
+        state?: string;
+        city?: string;
+    };
+    birth_country?: string | null;
+    death_country?: string | null;
     spouses?: (number | string)[];
     parents?: (number | string)[];
     isMarriageNode?: boolean;

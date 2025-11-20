@@ -52,37 +52,52 @@ export default function ModalEditar({
 
     return (
         <div
-            className="fixed inset-0 backdrop-blur bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-lg shadow-xl w-full max-w-md"
+                className="bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200/60 dark:border-gray-700/60"
                 onClick={(e) => e.stopPropagation()}
             >
                 <form onSubmit={handleSubmit}>
                     {/* Header */}
-                    <div className="p-6 border-b border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-700">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h2>
                     </div>
 
                     {/* Campo de texto */}
                     <div className="p-6">
-                        <label htmlFor="nombre" className="block text-sm font-medium text-black mb-2">
+                        <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                             Nombre del árbol
                         </label>
-                        <input  type="text" id="nombre" value={nombre} onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black" placeholder="Ingresa el nombre del árbol"autoFocus/>
+                        <input
+                            type="text"
+                            id="nombre"
+                            value={nombre}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+                            placeholder="Ingresa el nombre del árbol"
+                            autoFocus
+                        />
                         {error && (
                             <p className="text-red-500 text-sm mt-2">{error}</p>
                         )}
                     </div>
 
                     {/* Botones */}
-                    <div className="flex gap-3 p-6 border-t border-gray-200">
-                        <button type="button" onClick={onClose} className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors font-medium">
+                    <div className="flex gap-3 p-6 border-t border-gray-100 dark:border-gray-700">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium cursor-pointer"
+                        >
                             Cancelar
                         </button>
-                        <button type="submit" disabled={!nombre.trim() || !!error} className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-md transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <button
+                            type="submit"
+                            disabled={!nombre.trim() || !!error}
+                            className="flex-1 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white rounded-lg transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed"
+                        >
                             Guardar
                         </button>
                     </div>

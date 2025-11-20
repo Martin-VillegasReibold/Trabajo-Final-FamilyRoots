@@ -147,7 +147,7 @@ export default function WorldBirthDeathMap({ nodes, isDark }: { nodes: NodeForMa
   return (
     <div className="relative w-full h-full">
       {/* Toggle controls */}
-      <div className="absolute top-2 right-2 z-10 flex items-center gap-1 rounded-md border border-emerald-500 bg-white/80 px-1 py-1 text-xs font-medium backdrop-blur dark:bg-gray-900/70" role="group" aria-label="Modo del mapa">
+      <div className="absolute top-5 right-2 z-10 flex items-center gap-1 rounded-md border border-emerald-500 bg-white/80 px-1 py-1 text-xs font-medium backdrop-blur dark:bg-gray-900/70" role="group" aria-label="Modo del mapa">
         <button
           type="button"
           onClick={() => setMode('births')}
@@ -174,7 +174,7 @@ export default function WorldBirthDeathMap({ nodes, isDark }: { nodes: NodeForMa
         </button>
       </div>
       {/* Legend */}
-      <div className="absolute top-12 right-2 z-10 rounded-md border bg-white/80 px-2 py-1 text-[11px] backdrop-blur dark:bg-gray-900/70">
+      <div className="absolute top-14 right-2 z-10 rounded-md border bg-white/80 px-2 py-1 text-[11px] backdrop-blur dark:bg-gray-900/70">
         <div className="flex items-center gap-2">
           {(mode === 'both' || mode === 'births') && (
             <span className="inline-flex items-center gap-1"><span className="inline-block size-2 rounded-full" style={{ backgroundColor: markerBirth }}></span> Nacimientos</span>
